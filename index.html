@@ -192,15 +192,22 @@
     .b-10k   { background: #d3f9d8; color: #2f9e44; }
     .b-5k    { background: #e8f4fd; color: #1971c2; }
     .b-ultra { background: #f3d9fa; color: #7950f2; }
+    .b-trail { background: #d3f9d8; color: #2b8a3e; }
     .b-other { background: #f1f3f5; color: #495057; }
     [data-theme="dark"] .b-full  { background: rgba(201,42,42,.25);   color: #ff8787; }
     [data-theme="dark"] .b-half  { background: rgba(230,119,0,.25);   color: #ffd43b; }
     [data-theme="dark"] .b-10k   { background: rgba(47,158,68,.25);   color: #8ce99a; }
     [data-theme="dark"] .b-5k    { background: rgba(25,113,194,.25);  color: #74c0fc; }
     [data-theme="dark"] .b-ultra { background: rgba(121,80,242,.25);  color: #d0bfff; }
+    [data-theme="dark"] .b-trail { background: rgba(47,138,68,.25);   color: #8ce99a; }
     [data-theme="dark"] .b-other { background: rgba(73,80,87,.3);     color: #ced4da; }
 
     .race-name { font-size: 1.05rem; font-weight: 700; line-height: 1.3; }
+    .official-link {
+      font-size: 0.8rem; text-decoration: none; opacity: 0.6;
+      vertical-align: middle; margin-left: 4px;
+    }
+    .official-link:hover { opacity: 1; }
     .race-meta {
       font-size: 0.82rem; color: var(--text-muted);
       display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
@@ -359,11 +366,11 @@ function todayStr() {
 const DOMESTIC_REGIONS = ['전체','서울','경기','충청','영남','전라','제주','강원'];
 const INTL_REGIONS     = ['전체','아시아','유럽','북미','오세아니아'];
 const STATUSES         = ['전체','접수전','접수중','접수마감'];
-const DISTANCES        = ['전체','풀','하프','10km','5km','울트라'];
+const DISTANCES        = ['전체','풀','하프','10km','5km','울트라','트레일'];
 
 const STATUS_KR  = { upcoming:'접수전', open:'접수중', closed:'접수마감' };
 const STATUS_CLS = { open:'s-open', upcoming:'s-upcoming', closed:'s-closed' };
-const DIST_CLS   = { '풀':'b-full','하프':'b-half','10km':'b-10k','5km':'b-5k','100km':'b-ultra','50km':'b-ultra','50K':'b-ultra','37K':'b-other','24K':'b-other','12K':'b-other' };
+const DIST_CLS   = { '풀':'b-full','하프':'b-half','10km':'b-10k','5km':'b-5k','3km':'b-5k','100km':'b-ultra','50km':'b-ultra','울트라':'b-ultra','트레일':'b-trail','50K':'b-ultra','37K':'b-other','24K':'b-other','12K':'b-other','25km':'b-other' };
 
 // ════════════════════════════════
 //  다크모드
@@ -536,9 +543,13 @@ function renderRaces() {
     const badges = r.distances.map(d2 =>
       `<span class="badge ${DIST_CLS[d2] || 'b-other'}">${d2}</span>`
     ).join('');
+    const naverUrl  = `https://search.naver.com/search.naver?query=${encodeURIComponent(r.name)}`;
+    const officialBtn = r.url && r.url !== '#'
+      ? `<a class="official-link" href="${r.url}" target="_blank" onclick="event.stopPropagation()" title="공식 사이트">🔗</a>`
+      : '';
 
     return `
-      <div class="race-card" onclick="window.open('${r.url}','_blank')">
+      <div class="race-card" onclick="window.open('${naverUrl}','_blank')">
         <div class="race-date${isIntl ? ' intl' : ''}">
           <span class="rd-month">${mo}월</span>
           <span class="rd-day">${d}일</span>
@@ -547,7 +558,7 @@ function renderRaces() {
         </div>
         <div class="race-body">
           <div class="race-badges">${badges}</div>
-          <div class="race-name">${r.name}</div>
+          <div class="race-name">${r.name} ${officialBtn}</div>
           <div class="race-meta">
             <span>${isIntl ? '🌏' : '📍'} ${r.location}</span>
             <span>⏰ ${r.startTime} 출발</span>

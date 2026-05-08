@@ -156,20 +156,37 @@ def guess_region(loc: str) -> str:
 
 
 DIST_MAP = [
-    (r"풀.{0,4}마라톤|42\.?195|full\s*marathon", "풀"),
-    (r"하프.{0,4}마라톤|21\.?0975|half\s*marathon", "하프"),
-    (r"10\s*km|10k\b", "10km"),
-    (r"5\s*km|5k\b", "5km"),
-    (r"100\s*km", "100km"),
-    (r"50\s*km", "50km"),
+    # 긴 거리 먼저 (100km > 50km > 울트라 순)
+    (r"100\s*k[m이]?\b|백\s*킬|울트라.{0,5}마라톤", "100km"),
+    (r"50\s*k[m이]?\b|오십\s*킬", "50km"),
     (r"울트라", "울트라"),
+    # 트레일 / 산악
+    (r"트레일|trail|산악.{0,4}마라톤|임도.{0,3}런", "트레일"),
+    # 풀마라톤 — 42K, 42.195, full, 풀, 풀코스
+    (r"풀.{0,5}마라톤|42\.?195|42\s*k[m이]?\b|풀코스|full.{0,5}marathon|\bfull\b", "풀"),
+    # 하프 — 21K, 21km, half, 하프
+    (r"하프.{0,5}마라톤|21\.?097|21\s*k[m이]?\b|21k\b|half.{0,5}marathon|\bhalf\b|하프코스", "하프"),
+    # 10km — 10K, 10km, 단축마라톤
+    (r"단축.{0,5}마라톤|10\s*k[m이]?\b|10k\b|10킬", "10km"),
+    # 5km
+    (r"5\s*k[m이]?\b|5k\b|5킬", "5km"),
+    # 3km
+    (r"3\s*k[m이]?\b|3k\b", "3km"),
+    # 마라톤(단독) = 풀 — 하프/단축/10/5km 표현 없을 때만
+    (r"마라톤", "풀"),
 ]
 
 def parse_distances(raw: str) -> list[str]:
+    if not raw:
+        return ["기타"]
+    txt = raw.lower()
     found = []
     for pat, label in DIST_MAP:
-        if re.search(pat, raw.lower()) and label not in found:
+        if re.search(pat, txt, re.IGNORECASE) and label not in found:
             found.append(label)
+    # '풀'이 있으면서 더 구체적인 값도 있으면 '풀' 제거 (하프+풀 중복 방지)
+    if "풀" in found and any(x in found for x in ["하프","10km","5km","3km"]):
+        found.remove("풀")
     return found or ["기타"]
 
 
