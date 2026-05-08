@@ -1,249 +1,256 @@
 <!DOCTYPE html>
-<html lang="ko" data-theme="light">
+<html lang="ko" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>🏃 RunInfo — 마라톤 대회 정보</title>
+  <title>RunInfo — 마라톤 대회 정보</title>
   <style>
-    /* ── CSS 변수 (라이트) ── */
+    /* ── CSS 변수 ── */
     :root {
-      --primary:        #e84057;
-      --primary-dark:   #c42d42;
-      --primary-light:  #ffeaed;
-      --secondary:      #3b5bdb;
-      --secondary-light:#edf2ff;
-      --accent:         #ff922b;
-      --bg:             #f8f9fa;
-      --card-bg:        #ffffff;
-      --text:           #212529;
-      --text-muted:     #868e96;
-      --border:         #dee2e6;
-      --header-bg:      #ffffff;
-      --radius:         12px;
+      --primary:        #ff4d6d;
+      --primary-dim:    rgba(255,77,109,0.15);
+      --secondary:      #4dabf7;
+      --secondary-dim:  rgba(77,171,247,0.15);
+      --accent:         #ffa94d;
+      --bg:             #0d0d10;
+      --surface:        #16161a;
+      --surface2:       #1e1e24;
+      --text:           #e8e8f0;
+      --text-muted:     #6b6b80;
+      --border:         #2a2a34;
+      --radius:         10px;
     }
-    /* ── CSS 변수 (다크) ── */
-    [data-theme="dark"] {
-      --bg:             #141416;
-      --card-bg:        #1e1e22;
-      --text:           #e9ecef;
-      --text-muted:     #868e96;
-      --border:         #2e2e36;
-      --header-bg:      #1a1a1f;
-      --primary-light:  rgba(232,64,87,0.18);
-      --secondary-light:rgba(59,91,219,0.18);
+    [data-theme="light"] {
+      --bg:             #f4f5f7;
+      --surface:        #ffffff;
+      --surface2:       #f0f1f3;
+      --text:           #1a1a2e;
+      --text-muted:     #7a7a90;
+      --border:         #e0e0e8;
+      --primary-dim:    rgba(255,77,109,0.10);
+      --secondary-dim:  rgba(77,171,247,0.10);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: 'Segoe UI', -apple-system, 'Malgun Gothic', sans-serif;
+      font-family: -apple-system, 'Segoe UI', 'Malgun Gothic', sans-serif;
       background: var(--bg);
       color: var(--text);
-      transition: background .3s, color .3s;
+      min-height: 100vh;
+      transition: background .25s, color .25s;
     }
 
     /* ── HEADER ── */
     header {
-      background: var(--header-bg);
+      background: var(--surface);
       border-bottom: 1px solid var(--border);
       position: sticky; top: 0; z-index: 100;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-      transition: background .3s, border-color .3s;
+      backdrop-filter: blur(12px);
     }
     .header-inner {
-      max-width: 1100px; margin: 0 auto;
+      max-width: 1080px; margin: 0 auto;
       display: flex; align-items: center; justify-content: space-between;
-      padding: 0 20px; height: 60px;
+      padding: 0 20px; height: 56px;
     }
     .logo {
-      font-size: 1.45rem; font-weight: 800; color: var(--primary);
-      text-decoration: none; letter-spacing: -0.5px;
+      font-size: 1.25rem; font-weight: 800; color: var(--primary);
+      text-decoration: none; letter-spacing: -0.5px; display: flex; align-items: center; gap: 6px;
     }
-    nav { display: flex; align-items: center; gap: 4px; }
-    nav a {
+    .logo-sub { font-size: 0.75rem; font-weight: 400; color: var(--text-muted); letter-spacing: 0; }
+    nav { display: flex; align-items: center; gap: 6px; }
+    .nav-link {
       text-decoration: none; color: var(--text-muted);
-      font-size: 0.9rem; font-weight: 500;
-      padding: 6px 14px; border-radius: 20px; transition: all .2s; cursor: pointer;
+      font-size: 0.88rem; font-weight: 600;
+      padding: 5px 14px; border-radius: 20px; transition: all .18s; cursor: pointer;
+      border: none; background: none;
     }
-    nav a:hover, nav a.active { color: var(--primary); background: var(--primary-light); }
-
-    /* ── 다크모드 토글 버튼 ── */
-    .dark-toggle {
-      display: flex; align-items: center; gap: 6px;
-      padding: 6px 14px; border-radius: 20px;
-      border: 1.5px solid var(--border);
-      background: var(--card-bg);
-      color: var(--text);
-      font-size: 0.85rem; font-weight: 600;
-      cursor: pointer; transition: all .2s;
-      white-space: nowrap;
+    .nav-link:hover, .nav-link.active { color: var(--primary); background: var(--primary-dim); }
+    .theme-btn {
+      padding: 5px 13px; border-radius: 20px;
+      border: 1px solid var(--border);
+      background: var(--surface2); color: var(--text-muted);
+      font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all .18s;
     }
-    .dark-toggle:hover { border-color: var(--primary); color: var(--primary); }
-    [data-theme="dark"] .dark-toggle { border-color: #555; }
+    .theme-btn:hover { border-color: var(--primary); color: var(--primary); }
 
     /* ── HERO ── */
     .hero {
-      background: linear-gradient(135deg, var(--primary) 0%, #ff6b8a 60%, var(--accent) 100%);
-      color: #fff; text-align: center; padding: 48px 20px 40px;
+      background: linear-gradient(160deg, #1a0a10 0%, #0d0d10 40%, #080d1a 100%);
+      padding: 40px 20px 36px; text-align: center;
+      border-bottom: 1px solid var(--border);
     }
-    .hero h1 { font-size: 2rem; font-weight: 800; margin-bottom: 8px; }
-    .hero p  { font-size: 1rem; opacity: .85; }
-    .hero-stats { display: flex; justify-content: center; gap: 36px; margin-top: 24px; }
-    .hero-stat strong { display: block; font-size: 1.6rem; font-weight: 800; }
-    .hero-stat span   { font-size: 0.78rem; opacity: .85; }
+    [data-theme="light"] .hero { background: linear-gradient(160deg, #fff0f3 0%, #f4f5f7 50%, #eef4ff 100%); }
+    .hero-title {
+      font-size: 1.8rem; font-weight: 900; letter-spacing: -1px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      margin-bottom: 6px;
+    }
+    .hero-sub { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 28px; }
+    .hero-stats { display: inline-flex; gap: 0; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+    .hero-stat {
+      padding: 12px 28px; text-align: center;
+      border-right: 1px solid var(--border); background: var(--surface);
+    }
+    .hero-stat:last-child { border-right: none; }
+    .hero-stat strong { display: block; font-size: 1.5rem; font-weight: 800; color: var(--primary); }
+    .hero-stat span   { font-size: 0.72rem; color: var(--text-muted); font-weight: 500; }
 
     /* ── TABS ── */
-    .tab-bar {
-      background: var(--header-bg);
-      border-bottom: 1px solid var(--border);
-      transition: background .3s;
-    }
-    .tab-inner { max-width: 1100px; margin: 0 auto; display: flex; padding: 0 20px; }
+    .tab-bar { background: var(--surface); border-bottom: 1px solid var(--border); }
+    .tab-inner { max-width: 1080px; margin: 0 auto; display: flex; padding: 0 20px; }
     .tab-btn {
-      padding: 14px 28px; font-size: 0.95rem; font-weight: 600;
+      padding: 13px 24px; font-size: 0.92rem; font-weight: 700;
       color: var(--text-muted); border: none; background: none;
-      cursor: pointer; border-bottom: 3px solid transparent; transition: all .2s;
+      cursor: pointer; border-bottom: 2px solid transparent; transition: all .18s;
     }
     .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
 
     /* ── FILTERS ── */
     .filters-wrap {
-      background: var(--header-bg); border-bottom: 1px solid var(--border);
-      padding: 14px 0; transition: background .3s;
+      background: var(--surface); border-bottom: 1px solid var(--border);
+      padding: 12px 0;
     }
     .filters-inner {
-      max-width: 1100px; margin: 0 auto; padding: 0 20px;
-      display: flex; flex-direction: column; gap: 10px;
+      max-width: 1080px; margin: 0 auto; padding: 0 20px;
+      display: flex; flex-direction: column; gap: 8px;
     }
-    .filter-row   { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-    .filter-label { font-size: 0.78rem; font-weight: 600; color: var(--text-muted); width: 36px; flex-shrink: 0; }
+    .filter-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .filter-label {
+      font-size: 0.72rem; font-weight: 700; color: var(--text-muted);
+      width: 32px; flex-shrink: 0; text-transform: uppercase; letter-spacing: .5px;
+    }
     .chip {
-      padding: 5px 14px; border-radius: 20px;
-      border: 1.5px solid var(--border);
-      background: var(--card-bg); color: var(--text);
-      font-size: 0.82rem; font-weight: 500;
-      cursor: pointer; transition: all .18s;
+      padding: 4px 13px; border-radius: 20px;
+      border: 1px solid var(--border);
+      background: var(--surface2); color: var(--text-muted);
+      font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all .15s;
     }
-    .chip:hover                { border-color: var(--primary); color: var(--primary); }
-    .chip.active               { background: var(--primary);   color: #fff; border-color: var(--primary); }
-    .chip.region-chip.active   { background: var(--secondary); color: #fff; border-color: var(--secondary); }
-    .chip.dist-chip.active     { background: var(--accent);    color: #fff; border-color: var(--accent); }
+    .chip:hover { border-color: var(--primary); color: var(--primary); }
+    .chip.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .chip.region-chip.active { background: var(--secondary); border-color: var(--secondary); }
+    .chip.dist-chip.active { background: var(--accent); border-color: var(--accent); color: #000; }
 
     /* ── CONTENT ── */
-    .content { max-width: 1100px; margin: 0 auto; padding: 24px 20px; }
-    .content-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
-    .result-count strong { color: var(--primary); }
+    .content { max-width: 1080px; margin: 0 auto; padding: 20px 20px 48px; }
+    .content-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .result-count { font-size: 0.85rem; color: var(--text-muted); }
+    .result-count strong { color: var(--primary); font-size: 1rem; }
+    .toolbar { display: flex; align-items: center; gap: 8px; }
+    .past-btn {
+      padding: 5px 13px; border-radius: 20px;
+      border: 1px solid var(--border); background: var(--surface2);
+      color: var(--text-muted); font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: all .15s;
+    }
+    .past-btn.on { border-color: var(--accent); color: var(--accent); }
     .sort-select {
       border: 1px solid var(--border); border-radius: 8px;
-      padding: 6px 12px; font-size: 0.85rem; cursor: pointer;
-      background: var(--card-bg); color: var(--text); transition: background .3s;
+      padding: 5px 10px; font-size: 0.82rem; cursor: pointer;
+      background: var(--surface2); color: var(--text); transition: background .25s;
     }
 
     /* ── RACE CARDS ── */
-    .race-list { display: flex; flex-direction: column; gap: 12px; }
+    .race-list { display: flex; flex-direction: column; gap: 8px; }
     .race-card {
-      background: var(--card-bg); border-radius: var(--radius);
+      background: var(--surface);
       border: 1px solid var(--border);
+      border-radius: var(--radius);
       display: flex; align-items: stretch; overflow: hidden;
-      cursor: pointer; transition: box-shadow .2s, transform .2s, border-color .2s;
+      cursor: pointer; transition: border-color .15s, box-shadow .15s, transform .15s;
+      position: relative;
     }
-    .race-card:hover {
-      box-shadow: 0 6px 24px rgba(0,0,0,.12);
-      transform: translateY(-2px);
-      border-color: var(--primary);
+    .race-card::before {
+      content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+      background: var(--primary); opacity: 0; transition: opacity .15s;
+      border-radius: var(--radius) 0 0 var(--radius);
     }
+    .race-card:hover { border-color: var(--primary); box-shadow: 0 4px 20px rgba(255,77,109,.12); transform: translateY(-1px); }
+    .race-card:hover::before { opacity: 1; }
 
     /* 날짜 컬럼 */
     .race-date {
-      width: 90px; min-width: 90px;
-      background: var(--primary-light);
+      width: 80px; min-width: 80px;
       display: flex; flex-direction: column;
       align-items: center; justify-content: center;
-      padding: 14px 8px; text-align: center;
-      gap: 2px;
+      padding: 12px 6px; text-align: center; gap: 1px;
+      background: var(--primary-dim);
     }
-    .race-date.intl { background: var(--secondary-light); }
-
-    .rd-month  { font-size: 0.75rem; font-weight: 700; color: var(--primary); }
-    .rd-day    { font-size: 1.9rem;  font-weight: 900; color: var(--primary); line-height: 1; }
-    .rd-week   { font-size: 0.72rem; color: var(--primary); }
+    .race-date.intl { background: var(--secondary-dim); }
+    .rd-month { font-size: 0.7rem; font-weight: 700; color: var(--primary); letter-spacing: .5px; }
+    .rd-day   { font-size: 1.8rem; font-weight: 900; color: var(--primary); line-height: 1; }
+    .rd-week  { font-size: 0.68rem; color: var(--primary); opacity: .8; }
     .race-date.intl .rd-month,
     .race-date.intl .rd-day,
     .race-date.intl .rd-week { color: var(--secondary); }
 
-    /* D-day 배지 */
     .dday-badge {
-      margin-top: 6px;
-      font-size: 0.68rem; font-weight: 800;
-      padding: 3px 7px; border-radius: 8px;
-      display: inline-block;
+      margin-top: 5px; font-size: 0.62rem; font-weight: 800;
+      padding: 2px 6px; border-radius: 6px; display: inline-block;
     }
-    .dday-today  { background: var(--primary);  color: #fff; }
-    .dday-soon   { background: var(--primary);  color: #fff; }
-    .dday-mid    { background: var(--accent);   color: #fff; }
-    .dday-far    { background: var(--secondary);color: #fff; }
-    .dday-past   { background: #adb5bd;         color: #fff; }
+    .dday-today { background: var(--primary); color: #fff; }
+    .dday-soon  { background: var(--primary); color: #fff; }
+    .dday-mid   { background: var(--accent);  color: #000; }
+    .dday-far   { background: var(--secondary); color: #fff; }
+    .dday-past  { background: var(--border);  color: var(--text-muted); }
 
-    /* 본문 컬럼 */
-    .race-body  { flex: 1; padding: 14px 16px; display: flex; flex-direction: column; gap: 5px; }
-    .race-badges{ display: flex; gap: 5px; flex-wrap: wrap; }
-    .badge      { font-size: 0.72rem; font-weight: 700; padding: 2px 9px; border-radius: 10px; }
-    .b-full  { background: #ffe3e3; color: #c92a2a; }
-    .b-half  { background: #fff3bf; color: #e67700; }
-    .b-10k   { background: #d3f9d8; color: #2f9e44; }
-    .b-5k    { background: #e8f4fd; color: #1971c2; }
-    .b-ultra { background: #f3d9fa; color: #7950f2; }
-    .b-trail { background: #d3f9d8; color: #2b8a3e; }
-    .b-other { background: #f1f3f5; color: #495057; }
-    [data-theme="dark"] .b-full  { background: rgba(201,42,42,.25);   color: #ff8787; }
-    [data-theme="dark"] .b-half  { background: rgba(230,119,0,.25);   color: #ffd43b; }
-    [data-theme="dark"] .b-10k   { background: rgba(47,158,68,.25);   color: #8ce99a; }
-    [data-theme="dark"] .b-5k    { background: rgba(25,113,194,.25);  color: #74c0fc; }
-    [data-theme="dark"] .b-ultra { background: rgba(121,80,242,.25);  color: #d0bfff; }
-    [data-theme="dark"] .b-trail { background: rgba(47,138,68,.25);   color: #8ce99a; }
-    [data-theme="dark"] .b-other { background: rgba(73,80,87,.3);     color: #ced4da; }
+    /* 본문 */
+    .race-body { flex: 1; padding: 12px 16px; display: flex; flex-direction: column; justify-content: center; gap: 5px; }
+    .race-badges { display: flex; gap: 4px; flex-wrap: wrap; }
+    .badge { font-size: 0.68rem; font-weight: 700; padding: 2px 8px; border-radius: 6px; }
+    .b-full  { background: rgba(255,77,109,.18);  color: #ff8fa3; }
+    .b-half  { background: rgba(255,169,77,.18);  color: #ffa94d; }
+    .b-10k   { background: rgba(64,192,87,.18);   color: #69db7c; }
+    .b-5k    { background: rgba(77,171,247,.18);  color: #74c0fc; }
+    .b-ultra { background: rgba(190,75,219,.18);  color: #da77f2; }
+    .b-trail { background: rgba(32,201,151,.18);  color: #38d9a9; }
+    .b-other { background: rgba(134,142,150,.15); color: #adb5bd; }
 
-    .race-name { font-size: 1.05rem; font-weight: 700; line-height: 1.3; }
-    .official-link {
-      font-size: 0.8rem; text-decoration: none; opacity: 0.6;
-      vertical-align: middle; margin-left: 4px;
-    }
-    .official-link:hover { opacity: 1; }
+    .race-name { font-size: 1rem; font-weight: 700; line-height: 1.35; color: var(--text); }
     .race-meta {
-      font-size: 0.82rem; color: var(--text-muted);
-      display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+      font-size: 0.78rem; color: var(--text-muted);
+      display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
     }
+    .race-meta span { display: flex; align-items: center; gap: 3px; }
 
-    /* 오른쪽 컬럼 */
+    /* 오른쪽 */
     .race-right {
       display: flex; flex-direction: column;
       align-items: flex-end; justify-content: center;
-      padding: 14px 16px; gap: 8px; min-width: 160px;
+      padding: 12px 16px; gap: 6px; min-width: 140px;
     }
-    .status-badge { font-size: 0.78rem; font-weight: 700; padding: 4px 13px; border-radius: 20px; }
-    .s-open     { background: #d3f9d8; color: #2f9e44; }
-    .s-upcoming { background: #fff3bf; color: #e67700; }
-    .s-closed   { background: #f1f3f5; color: #868e96; }
-    [data-theme="dark"] .s-open     { background: rgba(47,158,68,.2);  color: #8ce99a; }
-    [data-theme="dark"] .s-upcoming { background: rgba(230,119,0,.2);  color: #ffd43b; }
-    [data-theme="dark"] .s-closed   { background: rgba(134,142,150,.15); color: #868e96; }
-    .reg-period { font-size: 0.75rem; color: var(--text-muted); text-align: right; line-height: 1.5; }
+    .status-badge {
+      font-size: 0.72rem; font-weight: 700;
+      padding: 4px 12px; border-radius: 20px; letter-spacing: .3px;
+    }
+    .s-open     { background: rgba(64,192,87,.18);  color: #69db7c;  border: 1px solid rgba(64,192,87,.3); }
+    .s-upcoming { background: rgba(255,169,77,.18); color: #ffa94d;  border: 1px solid rgba(255,169,77,.3); }
+    .s-closed   { background: rgba(134,142,150,.1); color: var(--text-muted); border: 1px solid var(--border); }
+    .reg-period { font-size: 0.7rem; color: var(--text-muted); text-align: right; line-height: 1.6; }
 
-    /* ── EMPTY STATE ── */
+    /* ── EMPTY ── */
     .empty-state { text-align: center; padding: 64px 20px; color: var(--text-muted); display: none; }
-    .empty-state p { margin-top: 10px; }
+    .empty-state .empty-icon { font-size: 3rem; margin-bottom: 12px; }
+    .empty-state p { font-size: 0.9rem; }
 
     /* ── FOOTER ── */
     footer {
-      background: #1a1a1f; color: rgba(255,255,255,.5);
-      text-align: center; padding: 28px 20px; margin-top: 48px; font-size: 0.82rem;
+      background: var(--surface); border-top: 1px solid var(--border);
+      text-align: center; padding: 24px 20px;
+      font-size: 0.78rem; color: var(--text-muted);
     }
-    footer strong { color: #fff; }
+    footer strong { color: var(--text); }
 
+    /* ── MOBILE ── */
     @media (max-width: 600px) {
-      .hero h1 { font-size: 1.4rem; }
-      .hero-stats { gap: 20px; }
+      .hero-title { font-size: 1.4rem; }
+      .hero-stats { flex-direction: row; }
+      .hero-stat  { padding: 10px 16px; }
       .race-right { display: none; }
-      .race-date  { width: 76px; min-width: 76px; }
+      .race-date  { width: 68px; min-width: 68px; }
+      .rd-day     { font-size: 1.5rem; }
     }
   </style>
 </head>
@@ -252,23 +259,25 @@
 <!-- ── HEADER ── -->
 <header>
   <div class="header-inner">
-    <a class="logo" href="#">🏃 RunInfo</a>
+    <a class="logo" href="#">
+      🏃 RunInfo
+      <span class="logo-sub">마라톤 대회 정보</span>
+    </a>
     <nav>
-      <a href="#" class="active" id="nav-domestic" onclick="switchTab('domestic'); setNavActive(this)">국내</a>
-      <a href="#" id="nav-intl"     onclick="switchTab('intl');     setNavActive(this)">해외</a>
-      <button class="dark-toggle" id="dark-toggle-btn" onclick="toggleTheme()">🌙 다크모드</button>
-      <a href="#" class="dark-toggle" style="border:none;background:var(--primary);color:#fff;margin-left:4px;">로그인</a>
+      <button class="nav-link active" id="nav-domestic" onclick="switchTab('domestic'); setNavActive(this)">국내</button>
+      <button class="nav-link"        id="nav-intl"     onclick="switchTab('intl');     setNavActive(this)">해외</button>
+      <button class="theme-btn" id="theme-btn" onclick="toggleTheme()">☀️ 라이트</button>
     </nav>
   </div>
 </header>
 
 <!-- ── HERO ── -->
 <section class="hero">
-  <h1>🏃 마라톤 대회 정보 한눈에</h1>
-  <p>국내외 마라톤·러닝 대회 일정을 모아드립니다</p>
+  <div class="hero-title">마라톤 대회 정보 한눈에</div>
+  <p class="hero-sub">국내외 마라톤·러닝 대회 일정을 모아드립니다</p>
   <div class="hero-stats">
-    <div class="hero-stat"><strong id="stat-domestic">0</strong><span>국내 대회</span></div>
-    <div class="hero-stat"><strong id="stat-intl">0</strong><span>해외 대회</span></div>
+    <div class="hero-stat"><strong id="stat-domestic">0</strong><span>국내</span></div>
+    <div class="hero-stat"><strong id="stat-intl">0</strong><span>해외</span></div>
     <div class="hero-stat"><strong id="stat-open">0</strong><span>접수중</span></div>
   </div>
 </section>
@@ -300,11 +309,8 @@
 <div class="content">
   <div class="content-header">
     <p class="result-count"><strong id="count">0</strong>개 대회</p>
-    <div style="display:flex;align-items:center;gap:10px;">
-      <button id="past-toggle-btn" onclick="togglePast()"
-        style="padding:5px 13px;border-radius:20px;border:1.5px solid var(--border);
-               background:var(--card-bg);color:var(--text-muted);font-size:0.8rem;
-               cursor:pointer;transition:all .2s;">📅 지난 대회 포함</button>
+    <div class="toolbar">
+      <button class="past-btn" id="past-toggle-btn" onclick="togglePast()">📅 지난 대회 포함</button>
       <select class="sort-select" id="sort-select" onchange="renderRaces()">
         <option value="date">날짜순</option>
         <option value="name">이름순</option>
@@ -313,39 +319,23 @@
   </div>
   <div class="race-list" id="race-list"></div>
   <div class="empty-state" id="empty-state">
-    <div style="font-size:2.5rem">🔍</div>
+    <div class="empty-icon">🔍</div>
     <p>조건에 맞는 대회가 없습니다.</p>
   </div>
 </div>
 
 <footer>
-  <strong>RunInfo</strong> — 마라톤 대회 정보 포털<br>
-  대회 정보는 각 주관사 공식 사이트 기준입니다. 변경 가능성이 있으니 반드시 공식 사이트를 확인하세요.
+  <strong>RunInfo</strong> — 대회 정보는 각 주관사 공식 사이트 기준이며 변경될 수 있습니다.
 </footer>
 
 <script>
 // ════════════════════════════════
-//  샘플 데이터
+//  샘플 데이터 (races.json 로드 전 fallback)
 // ════════════════════════════════
 const RACES = [
-  { type:'domestic', date:'2026-05-09', weekday:'토', name:'2026 나는 솔로런', location:'서울 | 여의도공원 문화의마당', startTime:'08:30', distances:['10km'], region:'서울', status:'closed', regStart:'2026-03-18', regEnd:'2026-04-15', organizer:'KT ENA 런코리아', url:'#' },
-  { type:'domestic', date:'2026-05-09', weekday:'토', name:'2026 제23회 보령머드임해마라톤', location:'충남 | 대천해수욕장', startTime:'08:30', distances:['하프','10km','5km'], region:'충청', status:'closed', regStart:'2026-02-23', regEnd:'2026-04-10', organizer:'보령시체육회', url:'#' },
-  { type:'domestic', date:'2026-05-09', weekday:'토', name:'커피 빵빵런 2026', location:'강원 | 강릉 경포호수공원', startTime:'08:00', distances:['10km','5km'], region:'강원', status:'open', regStart:'2026-02-10', regEnd:'2026-05-08', organizer:'(주)1986로드씬', url:'#' },
-  { type:'domestic', date:'2026-05-09', weekday:'토', name:'2026 BUSAN 50K', location:'부산 | 신라대학교 대운동장', startTime:'06:00', distances:['50K','37K','24K','12K'], region:'영남', status:'closed', regStart:'2026-01-05', regEnd:'2026-02-03', organizer:'비브라이더', url:'#' },
-  { type:'domestic', date:'2026-05-09', weekday:'토', name:'제19회 대전 한밭울트라마라톤', location:'대전 | 둔산대로 169', startTime:'16:00', distances:['100km','50km'], region:'충청', status:'closed', regStart:'2026-01-01', regEnd:'2026-04-26', organizer:'대전한밭울트라조직위', url:'#' },
-  { type:'domestic', date:'2026-05-10', weekday:'일', name:'윙스 포 라이프 월드런 2026', location:'경기 | 부천종합운동장', startTime:'20:00', distances:['풀','하프','10km'], region:'경기', status:'open', regStart:'2026-01-01', regEnd:'2026-05-10', organizer:'레드불', url:'#' },
   { type:'domestic', date:'2026-05-17', weekday:'일', name:'2026 서울 한강 마라톤', location:'서울 | 잠실종합운동장', startTime:'07:00', distances:['풀','하프','10km'], region:'서울', status:'open', regStart:'2026-03-01', regEnd:'2026-05-10', organizer:'서울마라톤조직위', url:'#' },
-  { type:'domestic', date:'2026-05-24', weekday:'일', name:'제주 올레길 마라톤 2026', location:'제주 | 제주시민복지타운', startTime:'07:30', distances:['풀','하프'], region:'제주', status:'upcoming', regStart:'2026-04-01', regEnd:'2026-05-20', organizer:'제주마라톤조직위', url:'#' },
   { type:'domestic', date:'2026-06-07', weekday:'일', name:'2026 경주 국제마라톤', location:'경북 | 황성공원', startTime:'07:00', distances:['풀','하프','10km','5km'], region:'영남', status:'upcoming', regStart:'2026-04-01', regEnd:'2026-05-31', organizer:'경주시체육회', url:'#' },
-  { type:'domestic', date:'2026-06-14', weekday:'일', name:'춘천 의암호 둘레길 런', location:'강원 | 춘천 의암공원', startTime:'08:00', distances:['하프','10km','5km'], region:'강원', status:'upcoming', regStart:'2026-04-15', regEnd:'2026-06-07', organizer:'춘천시체육회', url:'#' },
-  { type:'intl', date:'2026-09-06', weekday:'일', name:'Gold Coast Marathon', location:'호주 | 골드코스트', startTime:'07:00', distances:['풀','하프','10km'], region:'오세아니아', status:'open', regStart:'2026-01-01', regEnd:'2026-08-15', organizer:'IMG Events', url:'#' },
-  { type:'intl', date:'2026-09-20', weekday:'일', name:'Berlin Marathon 2026', location:'독일 | 베를린 브란덴부르크문', startTime:'09:15', distances:['풀'], region:'유럽', status:'open', regStart:'2026-01-10', regEnd:'2026-08-31', organizer:'SCC Events', url:'#' },
-  { type:'intl', date:'2026-10-04', weekday:'일', name:'Chicago Marathon 2026', location:'미국 | 시카고 그랜트파크', startTime:'07:30', distances:['풀'], region:'북미', status:'closed', regStart:'2025-11-01', regEnd:'2026-02-15', organizer:'Chicago Marathon LLC', url:'#' },
-  { type:'intl', date:'2026-10-11', weekday:'일', name:'Tokyo Marathon 2026', location:'일본 | 도쿄 도청광장', startTime:'09:10', distances:['풀'], region:'아시아', status:'closed', regStart:'2025-09-01', regEnd:'2026-01-31', organizer:'Tokyo Marathon Foundation', url:'#' },
-  { type:'intl', date:'2026-10-25', weekday:'일', name:'London Marathon 2026', location:'영국 | 런던 몰', startTime:'09:00', distances:['풀'], region:'유럽', status:'closed', regStart:'2025-10-01', regEnd:'2026-01-15', organizer:'London Marathon Events', url:'#' },
-  { type:'intl', date:'2026-11-01', weekday:'일', name:'New York City Marathon 2026', location:'미국 | 뉴욕 센트럴파크', startTime:'08:30', distances:['풀'], region:'북미', status:'upcoming', regStart:'2026-01-15', regEnd:'2026-07-01', organizer:'NYRR', url:'#' },
-  { type:'intl', date:'2026-11-15', weekday:'일', name:'Athens Classic Marathon', location:'그리스 | 아테네', startTime:'09:00', distances:['풀','10km'], region:'유럽', status:'upcoming', regStart:'2026-03-01', regEnd:'2026-10-31', organizer:'SEGAS', url:'#' },
-  { type:'intl', date:'2026-12-06', weekday:'일', name:'Singapore Marathon 2026', location:'싱가포르 | 마리나베이', startTime:'05:00', distances:['풀','하프','10km'], region:'아시아', status:'upcoming', regStart:'2026-05-01', regEnd:'2026-11-01', organizer:'Ironman Asia', url:'#' },
+  { type:'intl', date:'2026-09-20', weekday:'일', name:'Berlin Marathon 2026', location:'독일 | 베를린', startTime:'09:15', distances:['풀'], region:'유럽', status:'open', regStart:'2026-01-10', regEnd:'2026-08-31', organizer:'SCC Events', url:'#' },
 ];
 
 // ════════════════════════════════
@@ -355,9 +345,8 @@ let currentTab   = 'domestic';
 let activeRegion = '전체';
 let activeStatus = '전체';
 let activeDist   = '전체';
-let showPast     = false;  // 기본: 오늘 이후 대회만 표시
+let showPast     = false;
 
-// 오늘 날짜 문자열 (YYYY-MM-DD)
 function todayStr() {
   const t = new Date();
   return `${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}-${String(t.getDate()).padStart(2,'0')}`;
@@ -370,55 +359,42 @@ const DISTANCES        = ['전체','풀','하프','10km','5km','울트라','트�
 
 const STATUS_KR  = { upcoming:'접수전', open:'접수중', closed:'접수마감' };
 const STATUS_CLS = { open:'s-open', upcoming:'s-upcoming', closed:'s-closed' };
-const DIST_CLS   = { '풀':'b-full','하프':'b-half','10km':'b-10k','5km':'b-5k','3km':'b-5k','100km':'b-ultra','50km':'b-ultra','울트라':'b-ultra','트레일':'b-trail','50K':'b-ultra','37K':'b-other','24K':'b-other','12K':'b-other','25km':'b-other' };
+const DIST_CLS   = {
+  '풀':'b-full','하프':'b-half','10km':'b-10k','5km':'b-5k','3km':'b-5k',
+  '100km':'b-ultra','50km':'b-ultra','울트라':'b-ultra',
+  '트레일':'b-trail','25km':'b-other'
+};
 
 // ════════════════════════════════
-//  다크모드
+//  테마
 // ════════════════════════════════
 function applyTheme(theme) {
   document.documentElement.setAttribute('data-theme', theme);
-  const btn = document.getElementById('dark-toggle-btn');
-  if (btn) btn.innerHTML = theme === 'dark' ? '☀️ 라이트모드' : '🌙 다크모드';
+  const btn = document.getElementById('theme-btn');
+  if (btn) btn.textContent = theme === 'dark' ? '☀️ 라이트' : '🌙 다크';
 }
 function toggleTheme() {
-  const cur = document.documentElement.getAttribute('data-theme');
+  const cur  = document.documentElement.getAttribute('data-theme');
   const next = cur === 'dark' ? 'light' : 'dark';
   applyTheme(next);
   try { localStorage.setItem('ri_theme', next); } catch(e) {}
 }
-function togglePast() {
-  showPast = !showPast;
-  const btn = document.getElementById('past-toggle-btn');
-  if (showPast) {
-    btn.style.borderColor = 'var(--primary)';
-    btn.style.color = 'var(--primary)';
-    btn.textContent = '📅 지난 대회 숨기기';
-  } else {
-    btn.style.borderColor = 'var(--border)';
-    btn.style.color = 'var(--text-muted)';
-    btn.textContent = '📅 지난 대회 포함';
-  }
-  renderRaces();
-}
-// 저장된 테마 적용
+// 저장된 테마 적용 (없으면 dark 유지)
 try {
   const saved = localStorage.getItem('ri_theme');
   if (saved) applyTheme(saved);
 } catch(e) {}
 
 // ════════════════════════════════
-//  D-DAY 계산 (타임존 안전)
+//  D-DAY
 // ════════════════════════════════
 function getDday(dateStr) {
-  // "2026-05-09" → 로컬 기준으로 파싱
   const [y, m, d] = dateStr.split('-').map(Number);
   const race  = new Date(y, m - 1, d);
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const diff = Math.round((race - today) / 86400000);
-
-  if (diff < 0)   return { label: '종료',   cls: 'dday-past' };
-  if (diff === 0) return { label: 'D-DAY',  cls: 'dday-today' };
+  const today = new Date(); today.setHours(0,0,0,0);
+  const diff  = Math.round((race - today) / 86400000);
+  if (diff < 0)   return { label: '종료',      cls: 'dday-past' };
+  if (diff === 0) return { label: 'D-DAY',     cls: 'dday-today' };
   if (diff <= 30) return { label: `D-${diff}`, cls: 'dday-soon' };
   if (diff <= 90) return { label: `D-${diff}`, cls: 'dday-mid' };
   return              { label: `D-${diff}`, cls: 'dday-far' };
@@ -428,16 +404,16 @@ function getDday(dateStr) {
 //  통계
 // ════════════════════════════════
 function updateStats() {
-  const domestic = RACES.filter(r => r.type === 'domestic').length;
-  const intl     = RACES.filter(r => r.type === 'intl').length;
-  const open     = RACES.filter(r => r.status === 'open').length;
-  countUp('stat-domestic', domestic);
-  countUp('stat-intl', intl);
-  countUp('stat-open', open);
+  const today = todayStr();
+  const future = RACES.filter(r => r.date >= today);
+  countUp('stat-domestic', future.filter(r => r.type === 'domestic').length);
+  countUp('stat-intl',     future.filter(r => r.type === 'intl').length);
+  countUp('stat-open',     future.filter(r => r.status === 'open').length);
 }
 function countUp(id, target) {
   let n = 0;
   const el = document.getElementById(id);
+  if (!el) return;
   const iv = setInterval(() => {
     n = Math.min(n + Math.ceil(target / 20), target);
     el.textContent = n;
@@ -449,7 +425,7 @@ function countUp(id, target) {
 //  네비 활성화
 // ════════════════════════════════
 function setNavActive(el) {
-  document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(a => a.classList.remove('active'));
   el.classList.add('active');
 }
 
@@ -461,7 +437,7 @@ function switchTab(tab) {
   activeRegion = activeStatus = activeDist = '전체';
   showPast = false;
   const btn = document.getElementById('past-toggle-btn');
-  if (btn) { btn.style.borderColor=''; btn.style.color=''; btn.textContent='📅 지난 대회 포함'; }
+  if (btn) { btn.classList.remove('on'); btn.textContent = '📅 지난 대회 포함'; }
   document.getElementById('tab-domestic').classList.toggle('active', tab === 'domestic');
   document.getElementById('tab-intl').classList.toggle('active', tab === 'intl');
   buildFilters();
@@ -469,13 +445,20 @@ function switchTab(tab) {
 }
 
 // ════════════════════════════════
+//  지난 대회 토글
+// ════════════════════════════════
+function togglePast() {
+  showPast = !showPast;
+  const btn = document.getElementById('past-toggle-btn');
+  btn.classList.toggle('on', showPast);
+  btn.textContent = showPast ? '📅 지난 대회 숨기기' : '📅 지난 대회 포함';
+  renderRaces();
+}
+
+// ════════════════════════════════
 //  필터 빌드
 // ════════════════════════════════
-function buildFilters() {
-  buildRegion();
-  buildStatus();
-  buildDist();
-}
+function buildFilters() { buildRegion(); buildStatus(); buildDist(); }
 function buildRegion() {
   const list = currentTab === 'domestic' ? DOMESTIC_REGIONS : INTL_REGIONS;
   const wrap = document.getElementById('region-filter');
@@ -516,13 +499,12 @@ function buildDist() {
 function renderRaces() {
   const today = todayStr();
   let list = RACES.filter(r => r.type === currentTab);
-  // 날짜 필터: showPast=false 이면 오늘 이후만
   if (!showPast) list = list.filter(r => r.date >= today);
   if (activeRegion !== '전체') list = list.filter(r => r.region === activeRegion);
   if (activeStatus !== '전체') list = list.filter(r => STATUS_KR[r.status] === activeStatus);
-  if (activeDist !== '전체') {
+  if (activeDist   !== '전체') {
     list = list.filter(r => r.distances.some(d => {
-      if (activeDist === '울트라') return ['100km','50km','50K','37K','24K','12K'].includes(d);
+      if (activeDist === '울트라') return ['100km','50km','울트라'].includes(d);
       return d === activeDist;
     }));
   }
@@ -532,7 +514,6 @@ function renderRaces() {
   document.getElementById('count').textContent = list.length;
   const container = document.getElementById('race-list');
   const empty     = document.getElementById('empty-state');
-
   if (!list.length) { container.innerHTML = ''; empty.style.display = 'block'; return; }
   empty.style.display = 'none';
 
@@ -543,37 +524,34 @@ function renderRaces() {
     const badges = r.distances.map(d2 =>
       `<span class="badge ${DIST_CLS[d2] || 'b-other'}">${d2}</span>`
     ).join('');
-    const naverUrl  = `https://search.naver.com/search.naver?query=${encodeURIComponent(r.name)}`;
-    const officialBtn = r.url && r.url !== '#'
-      ? `<a class="official-link" href="${r.url}" target="_blank" onclick="event.stopPropagation()" title="공식 사이트">🔗</a>`
-      : '';
+    const naverUrl = `https://search.naver.com/search.naver?query=${encodeURIComponent(r.name)}`;
 
     return `
       <div class="race-card" onclick="window.open('${naverUrl}','_blank')">
         <div class="race-date${isIntl ? ' intl' : ''}">
           <span class="rd-month">${mo}월</span>
-          <span class="rd-day">${d}일</span>
+          <span class="rd-day">${d}</span>
           <span class="rd-week">(${r.weekday})</span>
           <span class="dday-badge ${dday.cls}">${dday.label}</span>
         </div>
         <div class="race-body">
           <div class="race-badges">${badges}</div>
-          <div class="race-name">${r.name} ${officialBtn}</div>
+          <div class="race-name">${r.name}</div>
           <div class="race-meta">
             <span>${isIntl ? '🌏' : '📍'} ${r.location}</span>
-            <span>⏰ ${r.startTime} 출발</span>
+            ${r.startTime ? `<span>⏰ ${r.startTime}</span>` : ''}
           </div>
         </div>
         <div class="race-right">
           <span class="status-badge ${STATUS_CLS[r.status]}">${STATUS_KR[r.status]}</span>
-          <div class="reg-period">접수 ${r.regStart}<br>~ ${r.regEnd}</div>
+          <div class="reg-period">${r.regStart ? `접수 ${r.regStart}<br>~ ${r.regEnd}` : ''}</div>
         </div>
       </div>`;
   }).join('');
 }
 
 // ════════════════════════════════
-//  부트스트랩 — races.json 로드
+//  부트스트랩
 // ════════════════════════════════
 (async function boot() {
   document.getElementById('race-list').innerHTML =
@@ -585,9 +563,9 @@ function renderRaces() {
     if (!Array.isArray(data) || data.length === 0) throw new Error('빈 데이터');
     RACES.length = 0;
     data.forEach(r => RACES.push(r));
-    console.log('[RunInfo] races.json 로드 완료:', data.length, '건');
+    console.log('[RunInfo] 로드 완료:', data.length, '건');
   } catch(e) {
-    console.warn('[RunInfo] races.json 로드 실패 → 샘플 데이터 사용:', e.message);
+    console.warn('[RunInfo] races.json 실패 → 샘플 데이터:', e.message);
   }
   updateStats();
   buildFilters();
