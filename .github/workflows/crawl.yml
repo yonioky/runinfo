@@ -30,13 +30,17 @@ jobs:
 
       # 3. 의존성 설치
       - name: 📦 라이브러리 설치
-        run: pip install requests beautifulsoup4 lxml
+        run: pip install requests beautifulsoup4 lxml playwright
 
-      # 4. 크롤러 실행
+      # 4. Playwright Chromium 설치 (SPA 사이트 렌더링용)
+      - name: 🌐 Playwright Chromium 설치
+        run: playwright install chromium --with-deps
+
+      # 5. 크롤러 실행
       - name: 🕷️ 크롤러 실행
         run: python crawler.py
 
-      # 5. 변경된 races.json 커밋 & 푸시
+      # 6. 변경된 races.json 커밋 & 푸시
       - name: 💾 races.json 커밋 & 푸시
         run: |
           git config user.name  "github-actions[bot]"

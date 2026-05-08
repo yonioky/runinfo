@@ -1,93 +1,49 @@
 [
-  {
-    "type": "domestic", "date": "2026-05-09", "weekday": "토",
-    "name": "2026 나는 솔로런", "location": "서울 | 여의도공원 문화의마당",
-    "startTime": "08:30", "distances": ["10km"], "region": "서울",
-    "status": "closed", "regStart": "2026-03-18", "regEnd": "2026-04-15",
-    "organizer": "KT ENA 런코리아", "url": "#"
-  },
-  {
-    "type": "domestic", "date": "2026-05-09", "weekday": "토",
-    "name": "2026 제23회 보령머드임해마라톤", "location": "충남 | 대천해수욕장",
-    "startTime": "08:30", "distances": ["하프","10km","5km"], "region": "충청",
-    "status": "closed", "regStart": "2026-02-23", "regEnd": "2026-04-10",
-    "organizer": "보령시체육회", "url": "#"
-  },
-  {
-    "type": "domestic", "date": "2026-05-09", "weekday": "토",
-    "name": "커피 빵빵런 2026", "location": "강원 | 강릉 경포호수공원",
-    "startTime": "08:00", "distances": ["10km","5km"], "region": "강원",
-    "status": "open", "regStart": "2026-02-10", "regEnd": "2026-05-08",
-    "organizer": "(주)1986로드씬", "url": "#"
-  },
-  {
-    "type": "domestic", "date": "2026-05-09", "weekday": "토",
-    "name": "2026 BUSAN 50K", "location": "부산 | 신라대학교 대운동장",
-    "startTime": "06:00", "distances": ["50km"], "region": "영남",
-    "status": "closed", "regStart": "2026-01-05", "regEnd": "2026-02-03",
-    "organizer": "비브라이더", "url": "#"
-  },
-  {
-    "type": "domestic", "date": "2026-05-17", "weekday": "일",
-    "name": "2026 서울 한강 마라톤", "location": "서울 | 잠실종합운동장",
-    "startTime": "07:00", "distances": ["풀","하프","10km"], "region": "서울",
-    "status": "open", "regStart": "2026-03-01", "regEnd": "2026-05-10",
-    "organizer": "서울마라톤조직위원회", "url": "#"
-  },
-  {
-    "type": "domestic", "date": "2026-05-24", "weekday": "일",
-    "name": "제주 올레길 마라톤 2026", "location": "제주 | 제주시민복지타운",
-    "startTime": "07:30", "distances": ["풀","하프"], "region": "제주",
-    "status": "upcoming", "regStart": "2026-04-01", "regEnd": "2026-05-20",
-    "organizer": "제주마라톤조직위원회", "url": "#"
-  },
-  {
-    "type": "domestic", "date": "2026-06-07", "weekday": "일",
-    "name": "2026 경주 국제마라톤", "location": "경북 | 황성공원",
-    "startTime": "07:00", "distances": ["풀","하프","10km","5km"], "region": "영남",
-    "status": "upcoming", "regStart": "2026-04-01", "regEnd": "2026-05-31",
-    "organizer": "경주시체육회", "url": "#"
-  },
-  {
-    "type": "domestic", "date": "2026-06-14", "weekday": "일",
-    "name": "춘천 의암호 둘레길 런", "location": "강원 | 춘천 의암공원",
-    "startTime": "08:00", "distances": ["하프","10km","5km"], "region": "강원",
-    "status": "upcoming", "regStart": "2026-04-15", "regEnd": "2026-06-07",
-    "organizer": "춘천시체육회", "url": "#"
-  },
-  {
-    "type": "intl", "date": "2026-09-20", "weekday": "일",
-    "name": "Berlin Marathon 2026", "location": "독일 | 베를린 브란덴부르크문",
-    "startTime": "09:15", "distances": ["풀"], "region": "유럽",
-    "status": "open", "regStart": "2026-01-10", "regEnd": "2026-08-31",
-    "organizer": "SCC Events", "url": "#"
-  },
-  {
-    "type": "intl", "date": "2026-10-04", "weekday": "일",
-    "name": "Chicago Marathon 2026", "location": "미국 | 시카고 그랜트파크",
-    "startTime": "07:30", "distances": ["풀"], "region": "북미",
-    "status": "closed", "regStart": "2025-11-01", "regEnd": "2026-02-15",
-    "organizer": "Chicago Marathon LLC", "url": "#"
-  },
-  {
-    "type": "intl", "date": "2026-11-01", "weekday": "일",
-    "name": "New York City Marathon 2026", "location": "미국 | 뉴욕 센트럴파크",
-    "startTime": "08:30", "distances": ["풀"], "region": "북미",
-    "status": "upcoming", "regStart": "2026-01-15", "regEnd": "2026-07-01",
-    "organizer": "NYRR", "url": "#"
-  },
-  {
-    "type": "intl", "date": "2026-10-11", "weekday": "일",
-    "name": "Tokyo Marathon 2026", "location": "일본 | 도쿄 도청광장",
-    "startTime": "09:10", "distances": ["풀"], "region": "아시아",
-    "status": "closed", "regStart": "2025-09-01", "regEnd": "2026-01-31",
-    "organizer": "Tokyo Marathon Foundation", "url": "#"
-  },
-  {
-    "type": "intl", "date": "2026-11-15", "weekday": "일",
-    "name": "Athens Classic Marathon", "location": "그리스 | 아테네",
-    "startTime": "09:00", "distances": ["풀","10km"], "region": "유럽",
-    "status": "upcoming", "regStart": "2026-03-01", "regEnd": "2026-10-31",
-    "organizer": "SEGAS", "url": "#"
-  }
+  {"type":"domestic","date":"2026-03-15","weekday":"일","name":"2026 동아마라톤 (서울국제마라톤)","location":"서울 | 광화문광장","startTime":"08:00","distances":["풀","10km"],"region":"서울","status":"closed","regStart":"2025-11-01","regEnd":"2026-02-28","organizer":"동아일보사","url":"https://www.donga-marathon.co.kr"},
+  {"type":"domestic","date":"2026-04-05","weekday":"일","name":"2026 대구 국제마라톤","location":"대구 | 대구스타디움","startTime":"08:00","distances":["풀","하프","10km"],"region":"영남","status":"closed","regStart":"2025-12-01","regEnd":"2026-03-20","organizer":"대구시체육회","url":"https://www.daegumarathon.co.kr"},
+  {"type":"domestic","date":"2026-04-12","weekday":"일","name":"2026 전주 국제하프마라톤","location":"전북 | 전주 덕진공원","startTime":"09:00","distances":["하프","10km","5km"],"region":"전라","status":"closed","regStart":"2026-01-10","regEnd":"2026-03-31","organizer":"전주시체육회","url":"#"},
+  {"type":"domestic","date":"2026-04-19","weekday":"일","name":"2026 인천 국제마라톤","location":"인천 | 인천아시아드주경기장","startTime":"08:00","distances":["풀","하프","10km"],"region":"경기","status":"closed","regStart":"2026-01-15","regEnd":"2026-04-05","organizer":"인천광역시체육회","url":"https://www.incheonmarathon.co.kr"},
+  {"type":"domestic","date":"2026-04-26","weekday":"일","name":"2026 경주 벚꽃 마라톤","location":"경북 | 경주 보문단지","startTime":"08:30","distances":["하프","10km","5km"],"region":"영남","status":"closed","regStart":"2026-01-20","regEnd":"2026-04-10","organizer":"경주시체육회","url":"#"},
+  {"type":"domestic","date":"2026-05-09","weekday":"토","name":"2026 나는 솔로런","location":"서울 | 여의도공원 문화의마당","startTime":"08:30","distances":["10km"],"region":"서울","status":"closed","regStart":"2026-03-18","regEnd":"2026-04-15","organizer":"KT ENA 런코리아","url":"#"},
+  {"type":"domestic","date":"2026-05-09","weekday":"토","name":"2026 제23회 보령머드임해마라톤","location":"충남 | 대천해수욕장","startTime":"08:30","distances":["하프","10km","5km"],"region":"충청","status":"closed","regStart":"2026-02-23","regEnd":"2026-04-10","organizer":"보령시체육회","url":"#"},
+  {"type":"domestic","date":"2026-05-09","weekday":"토","name":"커피 빵빵런 2026","location":"강원 | 강릉 경포호수공원","startTime":"08:00","distances":["10km","5km"],"region":"강원","status":"closed","regStart":"2026-02-10","regEnd":"2026-05-08","organizer":"(주)1986로드씬","url":"#"},
+  {"type":"domestic","date":"2026-05-09","weekday":"토","name":"2026 BUSAN 50K","location":"부산 | 신라대학교 대운동장","startTime":"06:00","distances":["50km"],"region":"영남","status":"closed","regStart":"2026-01-05","regEnd":"2026-02-03","organizer":"비브라이더","url":"#"},
+  {"type":"domestic","date":"2026-05-09","weekday":"토","name":"제19회 대전 한밭울트라마라톤","location":"대전 | 둔산대로 169","startTime":"16:00","distances":["100km","50km"],"region":"충청","status":"closed","regStart":"2026-01-01","regEnd":"2026-04-26","organizer":"대전한밭울트라조직위","url":"#"},
+  {"type":"domestic","date":"2026-05-10","weekday":"일","name":"윙스 포 라이프 월드런 2026","location":"경기 | 부천종합운동장","startTime":"20:00","distances":["풀","하프","10km"],"region":"경기","status":"closed","regStart":"2026-01-01","regEnd":"2026-05-10","organizer":"레드불","url":"#"},
+  {"type":"domestic","date":"2026-05-17","weekday":"일","name":"2026 서울 한강 마라톤","location":"서울 | 잠실종합운동장","startTime":"07:00","distances":["풀","하프","10km"],"region":"서울","status":"open","regStart":"2026-03-01","regEnd":"2026-05-14","organizer":"서울마라톤조직위원회","url":"#"},
+  {"type":"domestic","date":"2026-05-17","weekday":"일","name":"2026 광주 국제마라톤","location":"광주 | 광주월드컵경기장","startTime":"08:00","distances":["풀","하프","10km"],"region":"전라","status":"open","regStart":"2026-02-01","regEnd":"2026-05-10","organizer":"광주시체육회","url":"#"},
+  {"type":"domestic","date":"2026-05-24","weekday":"일","name":"제주 올레길 마라톤 2026","location":"제주 | 제주시민복지타운","startTime":"07:30","distances":["풀","하프"],"region":"제주","status":"open","regStart":"2026-04-01","regEnd":"2026-05-20","organizer":"제주마라톤조직위원회","url":"#"},
+  {"type":"domestic","date":"2026-05-24","weekday":"일","name":"2026 수원 화성 국제마라톤","location":"경기 | 수원 화성행궁","startTime":"08:00","distances":["풀","하프","10km","5km"],"region":"경기","status":"open","regStart":"2026-03-15","regEnd":"2026-05-17","organizer":"수원시체육회","url":"#"},
+  {"type":"domestic","date":"2026-05-31","weekday":"일","name":"2026 서울 도심 야간 러닝 페스티벌","location":"서울 | 청계광장","startTime":"20:00","distances":["10km","5km"],"region":"서울","status":"open","regStart":"2026-04-01","regEnd":"2026-05-25","organizer":"서울런닝클럽","url":"#"},
+  {"type":"domestic","date":"2026-06-07","weekday":"일","name":"2026 경주 국제마라톤","location":"경북 | 황성공원","startTime":"07:00","distances":["풀","하프","10km","5km"],"region":"영남","status":"upcoming","regStart":"2026-04-01","regEnd":"2026-05-31","organizer":"경주시체육회","url":"#"},
+  {"type":"domestic","date":"2026-06-07","weekday":"일","name":"2026 오서산 트레일런","location":"충남 | 보령 오서산","startTime":"08:00","distances":["50km","25km","10km"],"region":"충청","status":"upcoming","regStart":"2026-04-10","regEnd":"2026-06-01","organizer":"충남산악연맹","url":"#"},
+  {"type":"domestic","date":"2026-06-14","weekday":"일","name":"춘천 의암호 둘레길 런","location":"강원 | 춘천 의암공원","startTime":"08:00","distances":["하프","10km","5km"],"region":"강원","status":"upcoming","regStart":"2026-04-15","regEnd":"2026-06-07","organizer":"춘천시체육회","url":"#"},
+  {"type":"domestic","date":"2026-06-20","weekday":"토","name":"2026 한강 나이트 런","location":"서울 | 반포한강공원","startTime":"21:00","distances":["10km","5km"],"region":"서울","status":"upcoming","regStart":"2026-05-01","regEnd":"2026-06-15","organizer":"한강런닝클럽","url":"#"},
+  {"type":"domestic","date":"2026-06-28","weekday":"일","name":"2026 태백 고원 마라톤","location":"강원 | 태백 황지연못","startTime":"07:00","distances":["풀","하프","10km"],"region":"강원","status":"upcoming","regStart":"2026-04-20","regEnd":"2026-06-21","organizer":"태백시체육회","url":"#"},
+  {"type":"domestic","date":"2026-09-06","weekday":"일","name":"2026 서울 추석 마라톤","location":"서울 | 올림픽공원","startTime":"07:00","distances":["풀","하프","10km"],"region":"서울","status":"upcoming","regStart":"2026-07-01","regEnd":"2026-08-30","organizer":"서울마라톤조직위","url":"#"},
+  {"type":"domestic","date":"2026-09-13","weekday":"일","name":"2026 부산 마라톤","location":"부산 | 해운대해수욕장","startTime":"07:00","distances":["풀","하프","10km","5km"],"region":"영남","status":"upcoming","regStart":"2026-07-01","regEnd":"2026-09-05","organizer":"부산시체육회","url":"https://www.busanmarathon.org"},
+  {"type":"domestic","date":"2026-09-20","weekday":"일","name":"2026 DMZ 평화 마라톤","location":"경기 | 파주 임진각","startTime":"08:00","distances":["풀","하프","10km"],"region":"경기","status":"upcoming","regStart":"2026-07-15","regEnd":"2026-09-13","organizer":"파주시","url":"#"},
+  {"type":"domestic","date":"2026-09-27","weekday":"일","name":"2026 전주 국제마라톤","location":"전북 | 전주종합경기장","startTime":"08:00","distances":["풀","하프","10km"],"region":"전라","status":"upcoming","regStart":"2026-07-01","regEnd":"2026-09-20","organizer":"전주시체육회","url":"#"},
+  {"type":"domestic","date":"2026-10-04","weekday":"일","name":"2026 서울 한강 가을 마라톤","location":"서울 | 여의도한강공원","startTime":"07:30","distances":["풀","하프","10km","5km"],"region":"서울","status":"upcoming","regStart":"2026-08-01","regEnd":"2026-09-27","organizer":"서울시체육회","url":"#"},
+  {"type":"domestic","date":"2026-10-11","weekday":"일","name":"2026 인천 송도 마라톤","location":"인천 | 송도 센트럴파크","startTime":"07:30","distances":["풀","하프","10km"],"region":"경기","status":"upcoming","regStart":"2026-08-01","regEnd":"2026-10-04","organizer":"인천시체육회","url":"#"},
+  {"type":"domestic","date":"2026-10-18","weekday":"일","name":"2026 경주 국제마라톤 (가을)","location":"경북 | 경주 보문단지","startTime":"08:00","distances":["풀","하프","10km","5km"],"region":"영남","status":"upcoming","regStart":"2026-08-01","regEnd":"2026-10-10","organizer":"경주시체육회","url":"#"},
+  {"type":"domestic","date":"2026-10-25","weekday":"일","name":"2026 조선일보 춘천마라톤","location":"강원 | 춘천 공지천","startTime":"08:00","distances":["풀","하프"],"region":"강원","status":"upcoming","regStart":"2026-08-15","regEnd":"2026-10-15","organizer":"조선일보사","url":"https://www.chosunmarathon.co.kr"},
+  {"type":"domestic","date":"2026-10-25","weekday":"일","name":"2026 대전 마라톤","location":"대전 | 대전월드컵경기장","startTime":"08:00","distances":["풀","하프","10km"],"region":"충청","status":"upcoming","regStart":"2026-08-01","regEnd":"2026-10-18","organizer":"대전시체육회","url":"#"},
+  {"type":"domestic","date":"2026-11-01","weekday":"일","name":"2026 JTBC 서울마라톤","location":"서울 | 잠실올림픽주경기장","startTime":"08:00","distances":["풀","하프","10km"],"region":"서울","status":"upcoming","regStart":"2026-07-01","regEnd":"2026-10-25","organizer":"JTBC","url":"https://www.jtbcmarathon.com"},
+  {"type":"domestic","date":"2026-11-08","weekday":"일","name":"2026 광주 국제마라톤 (가을)","location":"광주 | 광주 상무지구","startTime":"08:00","distances":["풀","하프","10km"],"region":"전라","status":"upcoming","regStart":"2026-09-01","regEnd":"2026-11-01","organizer":"광주시체육회","url":"#"},
+  {"type":"domestic","date":"2026-11-15","weekday":"일","name":"2026 제주 국제마라톤","location":"제주 | 제주국제컨벤션센터","startTime":"07:00","distances":["풀","하프","10km","5km"],"region":"제주","status":"upcoming","regStart":"2026-08-01","regEnd":"2026-11-08","organizer":"제주마라톤조직위","url":"https://www.jejumarathon.com"},
+  {"type":"domestic","date":"2026-11-22","weekday":"일","name":"2026 수원 마라톤","location":"경기 | 수원종합운동장","startTime":"08:00","distances":["풀","하프","10km"],"region":"경기","status":"upcoming","regStart":"2026-09-01","regEnd":"2026-11-15","organizer":"수원시체육회","url":"#"},
+  {"type":"domestic","date":"2026-11-29","weekday":"일","name":"2026 대구 국제마라톤 (가을)","location":"대구 | 대구스타디움","startTime":"08:00","distances":["풀","하프","10km"],"region":"영남","status":"upcoming","regStart":"2026-09-01","regEnd":"2026-11-22","organizer":"대구시체육회","url":"#"},
+  {"type":"intl","date":"2026-09-06","weekday":"일","name":"Gold Coast Marathon 2026","location":"호주 | 골드코스트","startTime":"07:00","distances":["풀","하프","10km"],"region":"오세아니아","status":"open","regStart":"2026-01-01","regEnd":"2026-08-15","organizer":"IMG Events","url":"#"},
+  {"type":"intl","date":"2026-09-20","weekday":"일","name":"Berlin Marathon 2026","location":"독일 | 베를린 브란덴부르크문","startTime":"09:15","distances":["풀"],"region":"유럽","status":"open","regStart":"2026-01-10","regEnd":"2026-08-31","organizer":"SCC Events","url":"https://www.bmw-berlin-marathon.com"},
+  {"type":"intl","date":"2026-10-04","weekday":"일","name":"Chicago Marathon 2026","location":"미국 | 시카고 그랜트파크","startTime":"07:30","distances":["풀"],"region":"북미","status":"closed","regStart":"2025-11-01","regEnd":"2026-02-15","organizer":"Chicago Marathon LLC","url":"https://www.chicagomarathon.com"},
+  {"type":"intl","date":"2026-10-11","weekday":"일","name":"Tokyo Marathon 2026 (Autumn)","location":"일본 | 도쿄 도청광장","startTime":"09:10","distances":["풀"],"region":"아시아","status":"upcoming","regStart":"2026-05-01","regEnd":"2026-09-30","organizer":"Tokyo Marathon Foundation","url":"https://www.marathon.tokyo"},
+  {"type":"intl","date":"2026-10-18","weekday":"일","name":"Amsterdam Marathon 2026","location":"네덜란드 | 암스테르담","startTime":"10:00","distances":["풀","하프"],"region":"유럽","status":"upcoming","regStart":"2026-02-01","regEnd":"2026-09-30","organizer":"TCS Amsterdam Marathon","url":"#"},
+  {"type":"intl","date":"2026-10-25","weekday":"일","name":"London Marathon 2026","location":"영국 | 런던 몰","startTime":"09:00","distances":["풀"],"region":"유럽","status":"closed","regStart":"2025-10-01","regEnd":"2026-01-15","organizer":"London Marathon Events","url":"https://www.tcslondonmarathon.com"},
+  {"type":"intl","date":"2026-11-01","weekday":"일","name":"New York City Marathon 2026","location":"미국 | 뉴욕 센트럴파크","startTime":"08:30","distances":["풀"],"region":"북미","status":"upcoming","regStart":"2026-01-15","regEnd":"2026-07-01","organizer":"NYRR","url":"https://www.nyrr.org"},
+  {"type":"intl","date":"2026-11-08","weekday":"일","name":"Valencia Marathon 2026","location":"스페인 | 발렌시아","startTime":"08:30","distances":["풀","하프"],"region":"유럽","status":"upcoming","regStart":"2026-03-01","regEnd":"2026-10-15","organizer":"SD Correcaminos","url":"#"},
+  {"type":"intl","date":"2026-11-15","weekday":"일","name":"Athens Classic Marathon 2026","location":"그리스 | 아테네 마라톤","startTime":"09:00","distances":["풀","10km"],"region":"유럽","status":"upcoming","regStart":"2026-03-01","regEnd":"2026-10-31","organizer":"SEGAS","url":"#"},
+  {"type":"intl","date":"2026-11-29","weekday":"일","name":"Fukuoka International Marathon 2026","location":"일본 | 후쿠오카","startTime":"12:00","distances":["풀"],"region":"아시아","status":"upcoming","regStart":"2026-06-01","regEnd":"2026-10-31","organizer":"후쿠오카마라톤조직위","url":"#"},
+  {"type":"intl","date":"2026-12-06","weekday":"일","name":"Singapore Marathon 2026","location":"싱가포르 | 마리나베이","startTime":"05:00","distances":["풀","하프","10km"],"region":"아시아","status":"upcoming","regStart":"2026-05-01","regEnd":"2026-11-01","organizer":"Ironman Asia","url":"#"},
+  {"type":"intl","date":"2026-12-13","weekday":"일","name":"Honolulu Marathon 2026","location":"미국 | 호놀룰루 하와이","startTime":"05:00","distances":["풀"],"region":"북미","status":"upcoming","regStart":"2026-04-01","regEnd":"2026-11-30","organizer":"Honolulu Marathon Association","url":"#"}
 ]
