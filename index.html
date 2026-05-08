@@ -293,10 +293,16 @@
 <div class="content">
   <div class="content-header">
     <p class="result-count"><strong id="count">0</strong>개 대회</p>
-    <select class="sort-select" id="sort-select" onchange="renderRaces()">
-      <option value="date">날짜순</option>
-      <option value="name">이름순</option>
-    </select>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <button id="past-toggle-btn" onclick="togglePast()"
+        style="padding:5px 13px;border-radius:20px;border:1.5px solid var(--border);
+               background:var(--card-bg);color:var(--text-muted);font-size:0.8rem;
+               cursor:pointer;transition:all .2s;">📅 지난 대회 포함</button>
+      <select class="sort-select" id="sort-select" onchange="renderRaces()">
+        <option value="date">날짜순</option>
+        <option value="name">이름순</option>
+      </select>
+    </div>
   </div>
   <div class="race-list" id="race-list"></div>
   <div class="empty-state" id="empty-state">
@@ -342,6 +348,13 @@ let currentTab   = 'domestic';
 let activeRegion = '전체';
 let activeStatus = '전체';
 let activeDist   = '전체';
+let showPast     = false;  // 기본: 오늘 이후 대회만 표시
+
+// 오늘 날짜 문자열 (YYYY-MM-DD)
+function todayStr() {
+  const t = new Date();
+  return `${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}-${String(t.getDate()).padStart(2,'0')}`;
+}
 
 const DOMESTIC_REGIONS = ['전체','서울','경기','충청','영남','전라','제주','강원'];
 const INTL_REGIONS     = ['전체','아시아','유럽','북미','오세아니아'];
@@ -365,6 +378,20 @@ function toggleTheme() {
   const next = cur === 'dark' ? 'light' : 'dark';
   applyTheme(next);
   try { localStorage.setItem('ri_theme', next); } catch(e) {}
+}
+function togglePast() {
+  showPast = !showPast;
+  const btn = document.getElementById('past-toggle-btn');
+  if (showPast) {
+    btn.style.borderColor = 'var(--primary)';
+    btn.style.color = 'var(--primary)';
+    btn.textContent = '📅 지난 대회 숨기기';
+  } else {
+    btn.style.borderColor = 'var(--border)';
+    btn.style.color = 'var(--text-muted)';
+    btn.textContent = '📅 지난 대회 포함';
+  }
+  renderRaces();
 }
 // 저장된 테마 적용
 try {
@@ -425,6 +452,9 @@ function setNavActive(el) {
 function switchTab(tab) {
   currentTab = tab;
   activeRegion = activeStatus = activeDist = '전체';
+  showPast = false;
+  const btn = document.getElementById('past-toggle-btn');
+  if (btn) { btn.style.borderColor=''; btn.style.color=''; btn.textContent='📅 지난 대회 포함'; }
   document.getElementById('tab-domestic').classList.toggle('active', tab === 'domestic');
   document.getElementById('tab-intl').classList.toggle('active', tab === 'intl');
   buildFilters();
@@ -477,7 +507,10 @@ function buildDist() {
 //  렌더
 // ════════════════════════════════
 function renderRaces() {
+  const today = todayStr();
   let list = RACES.filter(r => r.type === currentTab);
+  // 날짜 필터: showPast=false 이면 오늘 이후만
+  if (!showPast) list = list.filter(r => r.date >= today);
   if (activeRegion !== '전체') list = list.filter(r => r.region === activeRegion);
   if (activeStatus !== '전체') list = list.filter(r => STATUS_KR[r.status] === activeStatus);
   if (activeDist !== '전체') {
