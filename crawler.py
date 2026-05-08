@@ -182,14 +182,22 @@ def crawl_marathongo() -> list[dict]:
             browser = p.chromium.launch(headless=True)
             page    = browser.new_page()
 
+            SKIP = ("_next/static","analytics","gtag","adtrafficquality",
+                    "favicon","\.png","\.jpg","\.svg","\.woff","\.css")
+
+            def on_request(request):
+                url = request.url
+                # 정적 리소스 제외하고 모든 API 요청 로깅
+                if not any(s in url for s in SKIP):
+                    log.info(f"  ➡️  REQ: {request.method} {url}")
+
             def on_response(response):
                 try:
                     url = response.url
-                    ct  = response.headers.get("content-type", "")
-                    # _next/static 등 정적 파일 제외, JSON 응답만 수집
-                    if "json" not in ct:
+                    if any(s in url for s in SKIP):
                         return
-                    if "_next/static" in url or "analytics" in url or "gtag" in url:
+                    ct  = response.headers.get("content-type", "")
+                    if "json" not in ct:
                         return
                     data = response.json()
                     log.info(f"  🔗 인터셉트: {url}")
@@ -197,9 +205,10 @@ def crawl_marathongo() -> list[dict]:
                 except Exception:
                     pass
 
+            page.on("request", on_request)
             page.on("response", on_response)
             page.goto(f"{BASE}/raceSchedule/domestic", wait_until="networkidle", timeout=30000)
-            time.sleep(2)
+            time.sleep(3)
             html = page.content()
             browser.close()
 
@@ -255,30 +264,38 @@ def crawl_marathongo() -> list[dict]:
             log.info(f"  → {len(races)}건 (인터셉트)")
             return races
 
-    # ── Step 4: _next/data API 직접 호출 (x-nextjs-data 헤더 포함) ──
-    if build_id:
-        next_headers = {**HEADERS, "x-nextjs-data": "1",
-                        "Referer": f"{BASE}/raceSchedule/domestic"}
-        for params in ["?raceEnd=%EC%A0%84%EC%B2%B4", ""]:
-            api_url = f"{BASE}/_next/data/{build_id}/raceSchedule/domestic.json{params}"
-            log.info(f"  📥 _next/data 호출: {api_url}")
-            try:
-                r = requests.get(api_url, headers=next_headers, timeout=15)
-                log.info(f"  HTTP {r.status_code} | {len(r.content)} bytes | {r.headers.get('content-type','')}")
-                if r.status_code == 200 and r.content:
+    # ── Step 4: api.marathongo.co.kr 직접 호출 ──
+    API_BASE = "https://api.marathongo.co.kr/marathongo"
+    api_candidates = [
+        f"{API_BASE}/race/schedule/domestic",
+        f"{API_BASE}/race/list?type=domestic",
+        f"{API_BASE}/race/domestic",
+        f"{API_BASE}/raceSchedule/domestic",
+        f"{API_BASE}/race?type=domestic",
+        f"{API_BASE}/race/schedule?raceEnd=전체",
+    ]
+    api_headers = {**HEADERS,
+                   "Origin": BASE,
+                   "Referer": f"{BASE}/raceSchedule/domestic"}
+    for api_url in api_candidates:
+        log.info(f"  📥 직접 API 호출: {api_url}")
+        try:
+            r = requests.get(api_url, headers=api_headers, timeout=15)
+            log.info(f"  HTTP {r.status_code} | {len(r.content)} bytes | ct={r.headers.get('content-type','')}")
+            if r.status_code == 200 and r.content:
+                ct = r.headers.get("content-type", "")
+                if "json" in ct or r.content[:1] in (b"[", b"{"):
                     data = r.json()
-                    pp   = data.get("pageProps", data)
-                    log.info(f"  📦 pageProps 키: {list(pp.keys()) if isinstance(pp,dict) else type(pp)}")
-                    # 재귀적으로 모든 리스트 탐색
-                    found_list = _find_race_list(pp)
+                    log.info(f"  📦 응답 타입: {type(data).__name__}, 미리보기: {str(data)[:150]}")
+                    found_list = _find_race_list(data) if isinstance(data, dict) else (data if isinstance(data, list) and len(data)>2 else [])
                     if found_list:
-                        log.info(f"  ✅ 재귀 탐색 → {len(found_list)}건")
+                        log.info(f"  ✅ {len(found_list)}건 발견!")
                         races = _parse_marathongo_items(found_list)
                         if races:
                             return races
-            except Exception as e:
-                log.warning(f"  → 실패: {e}")
-            time.sleep(DELAY)
+        except Exception as e:
+            log.warning(f"  → 실패: {e}")
+        time.sleep(DELAY)
 
     log.warning("  → 마라톤고 수집 실패 (수동 데이터 유지)")
     return races
