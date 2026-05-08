@@ -430,29 +430,79 @@ def crawl_marathon_pe_kr() -> list[dict]:
     BASE = "http://www.marathon.pe.kr"
     races = []
 
-    for page in range(1, 5):
-        url = f"{BASE}/index_calendar.html?page={page}"
-        soup = get_soup(url, encoding="euc-kr")
-        if not soup: break
+    # 시도할 URL 패턴 (사이트 구조 불확실)
+    urls_to_try = [
+        f"{BASE}/index_calendar.html",
+        f"{BASE}/sub02_1.html",
+        f"{BASE}/calendar.html",
+        f"{BASE}/",
+    ]
 
-        rows = soup.select("table tr, ul.race-list li")
-        found = False
-        for row in rows:
-            cols = row.find_all(["td", "li"])
-            if len(cols) < 2: continue
+    soup = None
+    for try_url in urls_to_try:
+        soup = get_soup(try_url, encoding="euc-kr")
+        if soup:
+            # 페이지에 날짜 형식 데이터가 있는지 확인
+            text = soup.get_text()
+            if re.search(r"\d{4}[.\-]\d{2}[.\-]\d{2}|\d{4}년\s*\d{1,2}월", text):
+                log.info(f"  ✅ 유효한 페이지: {try_url}")
+                break
+            else:
+                log.info(f"  ⚠️  날짜 데이터 없음: {try_url}")
+                soup = None
+
+    if not soup:
+        log.warning("  → 마라톤온라인 접근 실패")
+        return []
+
+    # ── 디버그: 페이지 구조 파악 ──
+    tables = soup.find_all("table")
+    lists  = soup.find_all(["ul", "ol"])
+    all_a  = soup.find_all("a", href=True)
+    log.info(f"  📄 테이블:{len(tables)} 리스트:{len(lists)} 링크:{len(all_a)}")
+    # 테이블 첫 행 샘플 출력
+    for i, tbl in enumerate(tables[:3]):
+        rows = tbl.find_all("tr")
+        log.info(f"  테이블{i}: {len(rows)}행")
+        for row in rows[1:3]:
+            cols = [c.get_text(strip=True)[:15] for c in row.find_all(["td","th"])]
+            log.info(f"    cols: {cols}")
+    # 날짜처럼 보이는 링크 샘플
+    for a in all_a[:5]:
+        log.info(f"  link: {a['href'][:60]} | {a.get_text(strip=True)[:30]}")
+
+    # ── 파싱: 테이블 기반 ──
+    for tbl in tables:
+        rows = tbl.find_all("tr")
+        for row in rows[1:]:  # 헤더 행 스킵
+            cols = row.find_all("td")
+            if len(cols) < 2:
+                continue
             try:
+                # 링크(대회명) 찾기
                 name_el = row.find("a")
-                if not name_el: continue
-                name    = name_el.get_text(strip=True)
-                href    = name_el.get("href", "#")
-                link    = (BASE + href) if href.startswith("/") else href
+                if not name_el:
+                    continue
+                name = name_el.get_text(strip=True)
+                if not name or len(name) < 3:
+                    continue
+                href = name_el.get("href", "#")
+                link = (BASE + "/" + href.lstrip("/")) if not href.startswith("http") else href
 
-                date_raw = cols[0].get_text(strip=True)
+                # 날짜: 첫 번째 td 혹은 날짜 패턴이 있는 td
+                date_raw = ""
+                for col in cols:
+                    txt = col.get_text(strip=True)
+                    if re.search(r"\d{4}", txt):
+                        date_raw = txt
+                        break
+
                 location = cols[2].get_text(strip=True) if len(cols) > 2 else ""
                 dist_raw = cols[3].get_text(strip=True) if len(cols) > 3 else ""
 
                 date_str, weekday = parse_date(date_raw)
-                if not date_str or not name: continue
+                if not date_str:
+                    continue
 
                 races.append({
                     "type": "domestic", "date": date_str, "weekday": weekday,
@@ -465,12 +515,54 @@ def crawl_marathon_pe_kr() -> list[dict]:
                     "crawledAt": datetime.now().strftime("%Y-%m-%d"),
                 })
                 log.info(f"  ✓ [{date_str}] {name}")
-                found = True
             except Exception as e:
                 log.debug(f"  파싱 오류: {e}")
-            time.sleep(DELAY)
 
-        if not found: break
+    # ── 페이지네이션 ──
+    if races:
+        for page_n in range(2, 6):
+            next_url = f"{BASE}/index_calendar.html?page={page_n}"
+            s2 = get_soup(next_url, encoding="euc-kr")
+            if not s2:
+                break
+            prev_len = len(races)
+            for tbl in s2.find_all("table"):
+                for row in tbl.find_all("tr")[1:]:
+                    cols = row.find_all("td")
+                    if len(cols) < 2:
+                        continue
+                    name_el = row.find("a")
+                    if not name_el:
+                        continue
+                    name = name_el.get_text(strip=True)
+                    if not name or len(name) < 3:
+                        continue
+                    href = name_el.get("href", "#")
+                    link = (BASE + "/" + href.lstrip("/")) if not href.startswith("http") else href
+                    date_raw = ""
+                    for col in cols:
+                        txt = col.get_text(strip=True)
+                        if re.search(r"\d{4}", txt):
+                            date_raw = txt
+                            break
+                    date_str, weekday = parse_date(date_raw)
+                    if not date_str:
+                        continue
+                    location = cols[2].get_text(strip=True) if len(cols) > 2 else ""
+                    dist_raw = cols[3].get_text(strip=True) if len(cols) > 3 else ""
+                    races.append({
+                        "type": "domestic", "date": date_str, "weekday": weekday,
+                        "name": name, "location": location, "startTime": "",
+                        "distances": parse_distances(dist_raw or name),
+                        "region": guess_region(location),
+                        "status": infer_status("", date_str),
+                        "regStart": "", "regEnd": "", "organizer": "",
+                        "url": link, "source": "marathon.pe.kr",
+                        "crawledAt": datetime.now().strftime("%Y-%m-%d"),
+                    })
+            if len(races) == prev_len:
+                break
+            time.sleep(DELAY)
 
     log.info(f"  → {len(races)}건")
     return races
@@ -479,24 +571,107 @@ def crawl_marathon_pe_kr() -> list[dict]:
 # ── 크롤러 3: 런벙 ───────────────────────────
 def crawl_runbung() -> list[dict]:
     log.info("📡 [3/3] 런벙 크롤링...")
-    url   = "https://www.runbung.app/ko/marathons"
+    BASE  = "https://www.runbung.app"
     races = []
+    cached_api = []  # 인터셉트된 레이스 목록
 
-    html, api_responses = get_html_and_api(url)
+    try:
+        from playwright.sync_api import sync_playwright
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            page    = browser.new_page()
 
-    if api_responses:
-        log.info(f"  ✅ API 응답 {len(api_responses)}개 감지")
-        for resp in api_responses:
-            log.info(f"     URL: {resp['url']}")
-            races.extend(_parse_api_items(resp["data"], "runbung.app"))
-        if races:
-            log.info(f"  → {len(races)}건 (API)")
-            return races
+            def on_response(response):
+                try:
+                    url = response.url
+                    ct  = response.headers.get("content-type", "")
+                    if "json" not in ct:
+                        return
+                    data = response.json()
+                    log.info(f"  🔗 인터셉트: {url}")
+                    # 배열이거나 목록 키를 가진 dict
+                    items = []
+                    if isinstance(data, list) and len(data) > 0:
+                        items = data
+                    elif isinstance(data, dict):
+                        found = _find_race_list(data)
+                        if found:
+                            items = found
+                    if items:
+                        cached_api.extend(items)
+                        log.info(f"  ✅ {len(items)}건 감지")
+                except Exception:
+                    pass
 
+            page.on("response", on_response)
+            page.goto(f"{BASE}/ko/marathons", wait_until="networkidle", timeout=30000)
+
+            # 스크롤로 레이지 로딩 트리거
+            for _ in range(5):
+                page.evaluate("window.scrollBy(0, window.innerHeight)")
+                time.sleep(1)
+
+            html = page.content()
+
+            # ── 디버그: 페이지 구조 파악 ──
+            all_links = page.eval_on_selector_all(
+                'a[href]',
+                'els => els.map(el => el.href).filter(h => h.includes("marathon") || h.includes("race") || h.includes("event"))'
+            )
+            log.info(f"  🃏 marathon/race 관련 링크: {len(all_links)}개")
+            for l in all_links[:5]:
+                log.info(f"     {l}")
+
+            # 페이지 텍스트 미리보기 (첫 500자)
+            soup_text = BeautifulSoup(html, "lxml").get_text(separator=" ")
+            log.info(f"  📄 텍스트: {soup_text[:300]}")
+
+            browser.close()
+
+    except Exception as e:
+        log.warning(f"  Playwright 오류: {e}")
+        return []
+
+    # ── API 인터셉트 결과가 있으면 사용 ──
+    if cached_api:
+        log.info(f"  📦 인터셉트 총 {len(cached_api)}건 → 파싱 시작")
+        races = _parse_api_items(cached_api, "runbung.app")
+        log.info(f"  → {len(races)}건 (API)")
+        return races
+
+    # ── API 없으면 HTML BeautifulSoup 파싱 시도 ──
     log.info("  ⚠️  API 미감지 → HTML 파싱 시도")
-    if not html: return []
-    soup  = BeautifulSoup(html, "lxml")
-    log.info(f"  📄 페이지 텍스트 미리보기: {soup.get_text()[:200]}")
+    soup = BeautifulSoup(html, "lxml")
+    # 날짜 + 이름 패턴으로 카드 탐색
+    for el in soup.find_all(["article", "li", "div"], class_=re.compile(r"card|item|race|marathon|event", re.I)):
+        try:
+            name_el = el.find(["h1","h2","h3","h4","strong","span"], class_=re.compile(r"name|title", re.I))
+            if not name_el:
+                name_el = el.find(["h2","h3","h4"])
+            if not name_el:
+                continue
+            name = name_el.get_text(strip=True)
+            text = el.get_text(" ", strip=True)
+            date_str, weekday = parse_date(text)
+            if not name or not date_str:
+                continue
+            a = el.find("a", href=True)
+            href = a["href"] if a else ""
+            link = (BASE + href) if href.startswith("/") else href or f"{BASE}/ko/marathons"
+            races.append({
+                "type": "domestic", "date": date_str, "weekday": weekday,
+                "name": name, "location": "", "startTime": "",
+                "distances": parse_distances(text),
+                "region": "기타",
+                "status": infer_status("", date_str),
+                "regStart": "", "regEnd": "", "organizer": "",
+                "url": link, "source": "runbung.app",
+                "crawledAt": datetime.now().strftime("%Y-%m-%d"),
+            })
+            log.info(f"  ✓ [{date_str}] {name}")
+        except Exception as e:
+            log.debug(f"  HTML 파싱 오류: {e}")
+
     log.info(f"  → {len(races)}건")
     return races
 
