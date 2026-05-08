@@ -59,25 +59,48 @@ def get_soup(url: str, encoding: str | None = None) -> BeautifulSoup | None:
         return None
 
 
-def get_html_playwright(url: str) -> str | None:
-    """JavaScript 렌더링이 필요한 SPA 사이트용"""
+def get_html_and_api(url: str) -> tuple[str, list[dict]]:
+    """
+    Playwright로 페이지를 열고:
+    1) 모든 fetch/XHR 응답을 가로채서 JSON API 응답 수집
+    2) 최종 렌더링된 HTML 반환
+    """
+    api_responses = []
     try:
         from playwright.sync_api import sync_playwright
         with sync_playwright() as p:
             browser = p.chromium.launch(headless=True)
             page = browser.new_page()
+
+            # ── 모든 네트워크 응답 가로채기 ──
+            def handle_response(response):
+                try:
+                    ct = response.headers.get("content-type", "")
+                    if "json" not in ct:
+                        return
+                    # API URL 로그 출력
+                    log.info(f"  🔗 API 감지: {response.url}")
+                    data = response.json()
+                    # 배열이거나 list 키를 가진 dict인 경우 수집
+                    if isinstance(data, list) and len(data) > 0:
+                        api_responses.append({"url": response.url, "data": data})
+                    elif isinstance(data, dict):
+                        for key in ("data", "list", "items", "races", "result", "results", "content"):
+                            if isinstance(data.get(key), list) and len(data[key]) > 0:
+                                api_responses.append({"url": response.url, "key": key, "data": data[key]})
+                                break
+                except Exception:
+                    pass
+
+            page.on("response", handle_response)
             page.goto(url, wait_until="networkidle", timeout=30000)
-            # 리스트가 로드될 때까지 최대 5초 대기
-            try:
-                page.wait_for_selector("li, tr, .race, .event, .card", timeout=5000)
-            except Exception:
-                pass
+            time.sleep(2)  # 추가 로딩 대기
             html = page.content()
             browser.close()
-            return html
+            return html, api_responses
     except Exception as e:
         log.warning(f"Playwright 오류: {e}")
-        return None
+        return "", []
 
 
 def parse_date(text: str) -> tuple[str, str]:
@@ -142,61 +165,115 @@ def parse_distances(raw: str) -> list[str]:
     return found or ["기타"]
 
 
-# ── 크롤러 1: 마라톤고 (SPA → Playwright) ────
+# ── 크롤러 1: 마라톤고 ────────────────────────
 def crawl_marathongo() -> list[dict]:
     log.info("📡 [1/3] 마라톤고 크롤링...")
-    url = "https://marathongo.co.kr/raceSchedule/domestic"
-    html = get_html_playwright(url)
-    if not html:
-        log.warning("  → Playwright 실패, requests 재시도")
-        soup = get_soup(url)
-        html = str(soup) if soup else ""
-
-    if not html: return []
-    soup = BeautifulSoup(html, "lxml")
+    url   = "https://marathongo.co.kr/raceSchedule/domestic"
     races = []
 
-    # 마라톤고 DOM 구조: 카드형 리스트
-    items = (soup.select("div.race-item, li.race-item, div.schedule-item") or
-             soup.select("ul.list li") or
-             soup.select("table tbody tr"))
+    html, api_responses = get_html_and_api(url)
+
+    # ── 방법 A: API 응답에서 직접 파싱 ──────────
+    if api_responses:
+        log.info(f"  ✅ API 응답 {len(api_responses)}개 감지 → JSON 파싱 시도")
+        for resp in api_responses:
+            log.info(f"     URL: {resp['url']}")
+            for item in resp["data"][:3]:
+                log.info(f"     샘플 키: {list(item.keys()) if isinstance(item, dict) else type(item)}")
+            races.extend(_parse_api_items(resp["data"], "marathongo.co.kr"))
+        if races:
+            log.info(f"  → {len(races)}건 (API)")
+            return races
+
+    # ── 방법 B: HTML 파싱 (API 실패 시 fallback) ─
+    log.info("  ⚠️  API 미감지 → HTML 파싱 시도")
+    if not html:
+        log.warning("  → HTML도 없음, 스킵")
+        return []
+
+    # 디버그: 실제 HTML 구조 일부 출력
+    soup = BeautifulSoup(html, "lxml")
+    body_text = soup.get_text()[:500]
+    log.info(f"  📄 페이지 텍스트 미리보기: {body_text[:200]}")
+
+    # 가능한 모든 selector 시도
+    for selector in [
+        "li[class*='race']", "div[class*='race']",
+        "li[class*='schedule']", "div[class*='schedule']",
+        "li[class*='item']", "div[class*='item']",
+        "tr[class*='race']", "tbody tr",
+        "article", ".card",
+    ]:
+        items = soup.select(selector)
+        if items:
+            log.info(f"  🎯 selector '{selector}' → {len(items)}개 매칭")
+            for item in items[:2]:
+                log.info(f"     HTML: {str(item)[:200]}")
+            break
+    else:
+        log.warning("  → 매칭된 selector 없음. Actions 로그의 API/HTML 미리보기를 확인하세요.")
+
+    log.info(f"  → {len(races)}건")
+    return races
+
+
+def _parse_api_items(items: list, source: str) -> list[dict]:
+    """JSON API 응답 아이템을 race dict로 변환"""
+    races = []
+    # 가능한 필드명 매핑 (사이트마다 다름)
+    NAME_KEYS  = ["raceName","name","title","eventName","대회명","raceTitle"]
+    DATE_KEYS  = ["raceDate","date","startDate","eventDate","대회일","raceDay"]
+    LOC_KEYS   = ["location","place","venue","address","장소","racePlace"]
+    DIST_KEYS  = ["distances","distance","category","종목","raceType","distList"]
+    REG_S_KEYS = ["regStartDate","registrationStart","접수시작","regStart"]
+    REG_E_KEYS = ["regEndDate","registrationEnd","접수마감","regEnd","regDeadline"]
+    URL_KEYS   = ["url","link","detailUrl","raceUrl"]
+    ORG_KEYS   = ["organizer","host","주최","organizerName"]
+
+    def pick(d, keys):
+        for k in keys:
+            if k in d and d[k]: return str(d[k])
+        return ""
 
     for item in items:
+        if not isinstance(item, dict): continue
         try:
-            name_el = (item.select_one(".race-name, .title, h3, h4, strong, td:nth-child(2) a") or
-                       item.find("a"))
-            date_el = item.select_one(".race-date, .date, time, td:first-child")
-            loc_el  = item.select_one(".location, .place, .venue, td:nth-child(3)")
-            dist_el = item.select_one(".distance, .distances, td:nth-child(4)")
+            name     = pick(item, NAME_KEYS)
+            date_raw = pick(item, DATE_KEYS)
+            location = pick(item, LOC_KEYS)
+            dist_raw = pick(item, DIST_KEYS)
+            reg_s    = pick(item, REG_S_KEYS)
+            reg_e    = pick(item, REG_E_KEYS)
+            url_val  = pick(item, URL_KEYS)
+            org      = pick(item, ORG_KEYS)
 
-            name     = name_el.get_text(strip=True) if name_el else ""
-            date_raw = date_el.get_text(strip=True) if date_el else ""
-            location = loc_el.get_text(strip=True)  if loc_el  else ""
-            dist_raw = dist_el.get_text(strip=True)  if dist_el else ""
-            link_el  = item.find("a", href=True)
-            href     = link_el["href"] if link_el else "#"
-            url_full = ("https://marathongo.co.kr" + href) if href.startswith("/") else href
-
-            if not name or len(name) < 2: continue
+            if not name or not date_raw: continue
             date_str, weekday = parse_date(date_raw)
             if not date_str: continue
+
+            # distances가 리스트인 경우 처리
+            dist_field = item.get("distances") or item.get("distList") or item.get("category")
+            if isinstance(dist_field, list):
+                distances = [str(d) for d in dist_field if d]
+            else:
+                distances = parse_distances(dist_raw or name)
 
             races.append({
                 "type": "domestic", "date": date_str, "weekday": weekday,
                 "name": name, "location": location, "startTime": "",
-                "distances": parse_distances(dist_raw or name),
+                "distances": distances,
                 "region": guess_region(location),
-                "status": infer_status("", date_str),
-                "regStart": "", "regEnd": "", "organizer": "",
-                "url": url_full, "source": "marathongo.co.kr",
+                "status": infer_status(reg_e[:10] if reg_e else "", date_str),
+                "regStart": reg_s[:10] if reg_s else "",
+                "regEnd":   reg_e[:10] if reg_e else "",
+                "organizer": org,
+                "url": url_val or "#",
+                "source": source,
                 "crawledAt": datetime.now().strftime("%Y-%m-%d"),
             })
             log.info(f"  ✓ [{date_str}] {name}")
         except Exception as e:
             log.debug(f"  파싱 오류: {e}")
-        time.sleep(DELAY)
-
-    log.info(f"  → {len(races)}건")
     return races
 
 
@@ -252,55 +329,27 @@ def crawl_marathon_pe_kr() -> list[dict]:
     return races
 
 
-# ── 크롤러 3: 런벙 (SPA → Playwright) ────────
+# ── 크롤러 3: 런벙 ───────────────────────────
 def crawl_runbung() -> list[dict]:
     log.info("📡 [3/3] 런벙 크롤링...")
-    url  = "https://www.runbung.app/ko/marathons"
-    html = get_html_playwright(url)
-    if not html:
-        soup = get_soup(url)
-        html = str(soup) if soup else ""
-    if not html: return []
-
-    soup  = BeautifulSoup(html, "lxml")
+    url   = "https://www.runbung.app/ko/marathons"
     races = []
 
-    items = (soup.select("article, div.marathon-card, li.marathon-item") or
-             soup.select("div[class*='card'], div[class*='item'], div[class*='race']"))
+    html, api_responses = get_html_and_api(url)
 
-    for item in items:
-        try:
-            name_el = (item.select_one("h2, h3, h4, [class*='title'], [class*='name']") or
-                       item.find("a"))
-            date_el = item.select_one("time, [class*='date'], [class*='Date']")
-            loc_el  = item.select_one("[class*='location'], [class*='place'], [class*='venue']")
-            link_el = item.find("a", href=True)
+    if api_responses:
+        log.info(f"  ✅ API 응답 {len(api_responses)}개 감지")
+        for resp in api_responses:
+            log.info(f"     URL: {resp['url']}")
+            races.extend(_parse_api_items(resp["data"], "runbung.app"))
+        if races:
+            log.info(f"  → {len(races)}건 (API)")
+            return races
 
-            name     = name_el.get_text(strip=True) if name_el else ""
-            date_raw = date_el.get("datetime", date_el.get_text(strip=True)) if date_el else ""
-            location = loc_el.get_text(strip=True) if loc_el else ""
-            href     = link_el["href"] if link_el else "#"
-            url_full = ("https://www.runbung.app" + href) if href.startswith("/") else href
-
-            if not name or len(name) < 2: continue
-            date_str, weekday = parse_date(date_raw)
-            if not date_str: continue
-
-            races.append({
-                "type": "domestic", "date": date_str, "weekday": weekday,
-                "name": name, "location": location, "startTime": "",
-                "distances": parse_distances(name),
-                "region": guess_region(location),
-                "status": infer_status("", date_str),
-                "regStart": "", "regEnd": "", "organizer": "",
-                "url": url_full, "source": "runbung.app",
-                "crawledAt": datetime.now().strftime("%Y-%m-%d"),
-            })
-            log.info(f"  ✓ [{date_str}] {name}")
-        except Exception as e:
-            log.debug(f"  파싱 오류: {e}")
-        time.sleep(DELAY)
-
+    log.info("  ⚠️  API 미감지 → HTML 파싱 시도")
+    if not html: return []
+    soup  = BeautifulSoup(html, "lxml")
+    log.info(f"  📄 페이지 텍스트 미리보기: {soup.get_text()[:200]}")
     log.info(f"  → {len(races)}건")
     return races
 

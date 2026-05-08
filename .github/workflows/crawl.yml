@@ -1,12 +1,9 @@
 name: 🏃 마라톤 데이터 자동 수집
 
 on:
-  # 매주 월요일 오전 9시 (KST = UTC+9 → UTC 00:00)
   schedule:
-    - cron: "0 0 * * 1"
-
-  # 수동 실행도 가능하게 (GitHub Actions 탭에서 'Run workflow' 클릭)
-  workflow_dispatch:
+    - cron: "0 0 * * 1"   # 매주 월요일 오전 9시 KST
+  workflow_dispatch:        # 수동 실행
 
 jobs:
   crawl-and-update:
@@ -14,37 +11,32 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
-      contents: write   # races.json 커밋·푸시 권한
+      contents: write
 
     steps:
-      # 1. 코드 체크아웃
       - name: 📥 코드 체크아웃
         uses: actions/checkout@v4
 
-      # 2. Python 환경 설정
       - name: 🐍 Python 3.11 설정
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+          # cache 옵션 제거 — requirements.txt 불필요
 
-      # 3. 의존성 설치
       - name: 📦 라이브러리 설치
-        run: pip install -r requirements.txt
+        run: |
+          pip install requests beautifulsoup4 lxml playwright
 
-      # 4. Playwright Chromium 설치 (SPA 사이트 렌더링용)
       - name: 🌐 Playwright Chromium 설치
         run: playwright install chromium --with-deps
 
-      # 5. 크롤러 실행
       - name: 🕷️ 크롤러 실행
         run: python crawler.py
 
-      # 6. 변경된 races.json 커밋 & 푸시
       - name: 💾 races.json 커밋 & 푸시
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add races.json
-          # 변경사항이 있을 때만 커밋
           git diff --cached --quiet || git commit -m "chore: 마라톤 데이터 자동 갱신 $(date +'%Y-%m-%d')"
           git push
