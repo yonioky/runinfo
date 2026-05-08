@@ -165,55 +165,151 @@ def parse_distances(raw: str) -> list[str]:
     return found or ["기타"]
 
 
-# ── 크롤러 1: 마라톤고 ────────────────────────
+# ── 크롤러 1: 마라톤고 (Next.js) ─────────────
 def crawl_marathongo() -> list[dict]:
-    log.info("📡 [1/3] 마라톤고 크롤링...")
-    url   = "https://marathongo.co.kr/raceSchedule/domestic"
+    log.info("📡 [1/3] 마라톤고 크롤링 (Next.js 방식)...")
+    BASE = "https://marathongo.co.kr"
     races = []
 
-    html, api_responses = get_html_and_api(url)
-
-    # ── 방법 A: API 응답에서 직접 파싱 ──────────
-    if api_responses:
-        log.info(f"  ✅ API 응답 {len(api_responses)}개 감지 → JSON 파싱 시도")
-        for resp in api_responses:
-            log.info(f"     URL: {resp['url']}")
-            for item in resp["data"][:3]:
-                log.info(f"     샘플 키: {list(item.keys()) if isinstance(item, dict) else type(item)}")
-            races.extend(_parse_api_items(resp["data"], "marathongo.co.kr"))
-        if races:
-            log.info(f"  → {len(races)}건 (API)")
-            return races
-
-    # ── 방법 B: HTML 파싱 (API 실패 시 fallback) ─
-    log.info("  ⚠️  API 미감지 → HTML 파싱 시도")
-    if not html:
-        log.warning("  → HTML도 없음, 스킵")
+    # ── Step 1: HTML에서 __NEXT_DATA__ 추출 ──
+    soup = get_soup(f"{BASE}/raceSchedule/domestic")
+    if not soup:
+        log.warning("  → 페이지 로드 실패")
         return []
 
-    # 디버그: 실제 HTML 구조 일부 출력
-    soup = BeautifulSoup(html, "lxml")
-    body_text = soup.get_text()[:500]
-    log.info(f"  📄 페이지 텍스트 미리보기: {body_text[:200]}")
+    next_data_tag = soup.find("script", id="__NEXT_DATA__")
+    if not next_data_tag:
+        log.warning("  → __NEXT_DATA__ 없음")
+        return []
 
-    # 가능한 모든 selector 시도
-    for selector in [
-        "li[class*='race']", "div[class*='race']",
-        "li[class*='schedule']", "div[class*='schedule']",
-        "li[class*='item']", "div[class*='item']",
-        "tr[class*='race']", "tbody tr",
-        "article", ".card",
+    try:
+        next_data = json.loads(next_data_tag.string)
+    except Exception as e:
+        log.warning(f"  → __NEXT_DATA__ 파싱 실패: {e}")
+        return []
+
+    build_id = next_data.get("buildId", "")
+    log.info(f"  🔑 buildId: {build_id}")
+
+    # ── Step 2: __NEXT_DATA__ 안에 이미 목록이 있으면 바로 사용 ──
+    try:
+        page_props = next_data["props"]["pageProps"]
+        for key in ("raceList", "races", "list", "data", "items", "raceScheduleList"):
+            if isinstance(page_props.get(key), list) and len(page_props[key]) > 0:
+                log.info(f"  ✅ pageProps.{key} 에서 {len(page_props[key])}건 발견")
+                races = _parse_marathongo_items(page_props[key])
+                if races:
+                    log.info(f"  → {len(races)}건 (pageProps)")
+                    return races
+    except Exception:
+        pass
+
+    # ── Step 3: /_next/data/{buildId}/raceSchedule/domestic.json 호출 ──
+    if not build_id:
+        log.warning("  → buildId 없음, 스킵")
+        return []
+
+    for params in [
+        "?raceEnd=%EC%A0%84%EC%B2%B4",   # raceEnd=전체
+        "",
     ]:
-        items = soup.select(selector)
-        if items:
-            log.info(f"  🎯 selector '{selector}' → {len(items)}개 매칭")
-            for item in items[:2]:
-                log.info(f"     HTML: {str(item)[:200]}")
-            break
-    else:
-        log.warning("  → 매칭된 selector 없음. Actions 로그의 API/HTML 미리보기를 확인하세요.")
+        api_url = f"{BASE}/_next/data/{build_id}/raceSchedule/domestic.json{params}"
+        log.info(f"  📥 Next.js API 호출: {api_url}")
+        try:
+            r = requests.get(api_url, headers=HEADERS, timeout=15)
+            r.raise_for_status()
+            data = r.json()
+            log.info(f"  📦 응답 최상위 키: {list(data.keys())}")
 
-    log.info(f"  → {len(races)}건")
+            # pageProps 안의 리스트 탐색
+            page_props = data.get("pageProps", data)
+            for key in ("raceList", "races", "list", "data", "items", "raceScheduleList"):
+                if isinstance(page_props.get(key), list) and len(page_props[key]) > 0:
+                    log.info(f"  ✅ {key} 에서 {len(page_props[key])}건 발견")
+                    # 첫 번째 아이템의 키 구조 출력
+                    sample = page_props[key][0]
+                    log.info(f"  🔍 샘플 키: {list(sample.keys()) if isinstance(sample, dict) else sample}")
+                    races = _parse_marathongo_items(page_props[key])
+                    if races:
+                        log.info(f"  → {len(races)}건")
+                        return races
+        except Exception as e:
+            log.warning(f"  → API 호출 실패: {e}")
+        time.sleep(DELAY)
+
+    log.warning("  → 데이터 수집 실패")
+    return races
+
+
+def _parse_marathongo_items(items: list) -> list[dict]:
+    """마라톤고 API 아이템 파싱"""
+    races = []
+    for item in items:
+        if not isinstance(item, dict):
+            continue
+        try:
+            # 마라톤고 실제 필드명 (확인된 것 + 후보)
+            name = (item.get("raceName") or item.get("name") or
+                    item.get("title") or item.get("raceTitle") or "")
+            date_raw = (item.get("raceDate") or item.get("date") or
+                        item.get("startDate") or item.get("raceDay") or "")
+            location = (item.get("location") or item.get("racePlace") or
+                        item.get("place") or item.get("address") or "")
+            reg_s = (item.get("regStartDate") or item.get("registrationStart") or
+                     item.get("regStart") or "")
+            reg_e = (item.get("regEndDate") or item.get("registrationEnd") or
+                     item.get("regEnd") or item.get("regDeadline") or "")
+            url_slug = (item.get("raceDetailUrl") or item.get("url") or
+                        item.get("slug") or item.get("id") or "")
+            organizer = (item.get("organizer") or item.get("host") or
+                         item.get("organizerName") or "")
+            start_time = (item.get("startTime") or item.get("raceTime") or "")
+
+            # 거리 정보
+            dist_raw = item.get("distances") or item.get("distList") or item.get("category") or ""
+            if isinstance(dist_raw, list):
+                distances = [str(d) for d in dist_raw if d]
+            else:
+                distances = parse_distances(str(dist_raw) or name)
+
+            if not name or not date_raw:
+                continue
+
+            date_str, weekday = parse_date(str(date_raw))
+            if not date_str:
+                continue
+
+            # url_slug가 슬러그면 상세 URL 조합
+            if url_slug and not url_slug.startswith("http"):
+                url_full = f"https://marathongo.co.kr/raceDetail/domestic/{url_slug}"
+            elif url_slug:
+                url_full = url_slug
+            else:
+                url_full = "https://marathongo.co.kr/raceSchedule/domestic"
+
+            races.append({
+                "type": "domestic",
+                "date": date_str,
+                "weekday": weekday,
+                "name": name,
+                "location": location,
+                "startTime": str(start_time),
+                "distances": distances,
+                "region": guess_region(location),
+                "status": infer_status(
+                    str(reg_e)[:10] if reg_e else "",
+                    date_str
+                ),
+                "regStart": str(reg_s)[:10] if reg_s else "",
+                "regEnd":   str(reg_e)[:10] if reg_e else "",
+                "organizer": organizer,
+                "url": url_full,
+                "source": "marathongo.co.kr",
+                "crawledAt": datetime.now().strftime("%Y-%m-%d"),
+            })
+            log.info(f"  ✓ [{date_str}] {name}")
+        except Exception as e:
+            log.debug(f"  파싱 오류: {e}")
     return races
 
 
