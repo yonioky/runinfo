@@ -535,12 +535,16 @@ function renderRaces() {
   document.getElementById('race-list').innerHTML =
     '<div style="text-align:center;padding:48px;color:var(--text-muted)">⏳ 불러오는 중...</div>';
   try {
-    const res = await fetch('races.json');
-    if (!res.ok) throw new Error();
+    const res = await fetch('races.json?v=' + Date.now());
+    if (!res.ok) throw new Error('races.json ' + res.status);
     const data = await res.json();
+    if (!Array.isArray(data) || data.length === 0) throw new Error('빈 데이터');
     RACES.length = 0;
     data.forEach(r => RACES.push(r));
-  } catch(e) { /* 샘플 데이터 사용 */ }
+    console.log('[RunInfo] races.json 로드 완료:', data.length, '건');
+  } catch(e) {
+    console.warn('[RunInfo] races.json 로드 실패 → 샘플 데이터 사용:', e.message);
+  }
   updateStats();
   buildFilters();
   renderRaces();

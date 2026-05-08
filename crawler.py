@@ -201,10 +201,20 @@ def crawl_marathongo() -> list[dict]:
             page.goto(f"{BASE}/raceSchedule/domestic?raceEnd=%EC%A0%84%EC%B2%B4",
                       wait_until="networkidle", timeout=30000)
 
-            # 스크롤 → 레이지 로딩 트리거
-            for _ in range(6):
-                page.evaluate("window.scrollBy(0, window.innerHeight)")
-                time.sleep(1.2)
+            # 스크롤 → 새 링크가 나타나지 않을 때까지 계속
+            prev_count = 0
+            for attempt in range(25):  # 최대 25회
+                page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
+                time.sleep(1.5)
+                cur_count = page.eval_on_selector_all(
+                    'a[href*="/raceDetail/domestic/"]',
+                    'els => els.length'
+                )
+                log.info(f"  🔄 스크롤 {attempt+1}: 링크 {cur_count}개")
+                if cur_count == prev_count:
+                    log.info("  ✅ 더 이상 새 링크 없음 → 스크롤 종료")
+                    break
+                prev_count = cur_count
 
             # buildId 추출
             html = page.content()
