@@ -715,8 +715,8 @@ def main():
 
     fresh = []
     fresh.extend(crawl_marathongo())
-    fresh.extend(crawl_marathon_pe_kr())
-    fresh.extend(crawl_runbung())
+    # crawl_marathon_pe_kr()  # 추후 활성화
+    # crawl_runbung()         # 추후 활성화
 
     existing = load_existing()
     merged   = merge(existing, fresh)
