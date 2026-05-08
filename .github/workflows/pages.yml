@@ -1,0 +1,48 @@
+name: 🌐 GitHub Pages 배포
+
+on:
+  # races.json 또는 index.html 변경 시 자동 배포
+  push:
+    branches: [main]
+    paths:
+      - "index.html"
+      - "races.json"
+      - "**.css"
+      - "**.js"
+
+  # 수동 배포
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 동시 배포 방지
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: GitHub Pages 배포
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 코드 체크아웃
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Pages 설정
+        uses: actions/configure-pages@v5
+
+      - name: 📤 아티팩트 업로드
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: "."   # 루트 전체를 배포 (index.html + races.json)
+
+      - name: 🚀 Pages 배포
+        id: deployment
+        uses: actions/deploy-pages@v4
