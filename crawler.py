@@ -171,74 +171,137 @@ def crawl_marathongo() -> list[dict]:
     BASE = "https://marathongo.co.kr"
     races = []
 
-    # ── Step 1: HTML에서 __NEXT_DATA__ 추출 ──
-    soup = get_soup(f"{BASE}/raceSchedule/domestic")
-    if not soup:
-        log.warning("  → 페이지 로드 실패")
-        return []
-
-    next_data_tag = soup.find("script", id="__NEXT_DATA__")
-    if not next_data_tag:
-        log.warning("  → __NEXT_DATA__ 없음")
-        return []
+    # ── Step 1: Playwright로 렌더링 → __NEXT_DATA__ + API 인터셉트 ──
+    build_id      = ""
+    page_props    = {}
+    intercepted   = []
 
     try:
-        next_data = json.loads(next_data_tag.string)
+        from playwright.sync_api import sync_playwright
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            page    = browser.new_page()
+
+            def on_response(response):
+                try:
+                    url = response.url
+                    ct  = response.headers.get("content-type", "")
+                    # _next/static 등 정적 파일 제외, JSON 응답만 수집
+                    if "json" not in ct:
+                        return
+                    if "_next/static" in url or "analytics" in url or "gtag" in url:
+                        return
+                    data = response.json()
+                    log.info(f"  🔗 인터셉트: {url}")
+                    intercepted.append({"url": url, "data": data})
+                except Exception:
+                    pass
+
+            page.on("response", on_response)
+            page.goto(f"{BASE}/raceSchedule/domestic", wait_until="networkidle", timeout=30000)
+            time.sleep(2)
+            html = page.content()
+            browser.close()
+
+        # __NEXT_DATA__ 추출
+        soup = BeautifulSoup(html, "lxml")
+        tag  = soup.find("script", id="__NEXT_DATA__")
+        if tag:
+            nd       = json.loads(tag.string)
+            build_id = nd.get("buildId", "")
+            page_props = nd.get("props", {}).get("pageProps", {})
+            log.info(f"  🔑 buildId: {build_id}")
+            log.info(f"  📦 pageProps 키: {list(page_props.keys())}")
+
     except Exception as e:
-        log.warning(f"  → __NEXT_DATA__ 파싱 실패: {e}")
-        return []
+        log.warning(f"  Playwright 오류: {e}")
 
-    build_id = next_data.get("buildId", "")
-    log.info(f"  🔑 buildId: {build_id}")
+    # ── Step 2: pageProps 안에 목록이 있으면 바로 사용 ──
+    for key in ("raceList","races","list","data","items","raceScheduleList","scheduleList"):
+        if isinstance(page_props.get(key), list) and len(page_props[key]) > 0:
+            log.info(f"  ✅ pageProps[{key}] → {len(page_props[key])}건")
+            sample = page_props[key][0]
+            log.info(f"  🔍 샘플 키: {list(sample.keys()) if isinstance(sample,dict) else sample}")
+            races = _parse_marathongo_items(page_props[key])
+            if races:
+                log.info(f"  → {len(races)}건")
+                return races
 
-    # ── Step 2: __NEXT_DATA__ 안에 이미 목록이 있으면 바로 사용 ──
-    try:
-        page_props = next_data["props"]["pageProps"]
-        for key in ("raceList", "races", "list", "data", "items", "raceScheduleList"):
-            if isinstance(page_props.get(key), list) and len(page_props[key]) > 0:
-                log.info(f"  ✅ pageProps.{key} 에서 {len(page_props[key])}건 발견")
-                races = _parse_marathongo_items(page_props[key])
-                if races:
-                    log.info(f"  → {len(races)}건 (pageProps)")
-                    return races
-    except Exception:
-        pass
+    # ── Step 3: 인터셉트된 API 응답에서 목록 추출 (가장 많은 건수 우선) ──
+    best_candidates = []
+    best_url = ""
+    for resp in intercepted:
+        data = resp["data"]
+        candidates = []
+        if isinstance(data, list) and len(data) > 2:
+            candidates = data
+        elif isinstance(data, dict):
+            # 모든 리스트 값 중 가장 길고 dict 원소를 가진 것 선택
+            for k, v in data.items():
+                if isinstance(v, list) and len(v) > 2 and isinstance(v[0] if v else None, dict):
+                    if len(v) > len(candidates):
+                        candidates = v
+                        log.info(f"  🔍 후보: {resp['url']} [{k}] → {len(v)}건")
+        if len(candidates) > len(best_candidates):
+            best_candidates = candidates
+            best_url = resp["url"]
 
-    # ── Step 3: /_next/data/{buildId}/raceSchedule/domestic.json 호출 ──
-    if not build_id:
-        log.warning("  → buildId 없음, 스킵")
-        return []
+    if best_candidates:
+        log.info(f"  ✅ 최적 인터셉트: {best_url} → {len(best_candidates)}건")
+        sample = best_candidates[0]
+        log.info(f"  🔍 샘플 키: {list(sample.keys()) if isinstance(sample,dict) else str(sample)[:100]}")
+        races = _parse_marathongo_items(best_candidates)
+        if races:
+            log.info(f"  → {len(races)}건 (인터셉트)")
+            return races
 
-    for params in [
-        "?raceEnd=%EC%A0%84%EC%B2%B4",   # raceEnd=전체
-        "",
-    ]:
-        api_url = f"{BASE}/_next/data/{build_id}/raceSchedule/domestic.json{params}"
-        log.info(f"  📥 Next.js API 호출: {api_url}")
-        try:
-            r = requests.get(api_url, headers=HEADERS, timeout=15)
-            r.raise_for_status()
-            data = r.json()
-            log.info(f"  📦 응답 최상위 키: {list(data.keys())}")
+    # ── Step 4: _next/data API 직접 호출 (x-nextjs-data 헤더 포함) ──
+    if build_id:
+        next_headers = {**HEADERS, "x-nextjs-data": "1",
+                        "Referer": f"{BASE}/raceSchedule/domestic"}
+        for params in ["?raceEnd=%EC%A0%84%EC%B2%B4", ""]:
+            api_url = f"{BASE}/_next/data/{build_id}/raceSchedule/domestic.json{params}"
+            log.info(f"  📥 _next/data 호출: {api_url}")
+            try:
+                r = requests.get(api_url, headers=next_headers, timeout=15)
+                log.info(f"  HTTP {r.status_code} | {len(r.content)} bytes | {r.headers.get('content-type','')}")
+                if r.status_code == 200 and r.content:
+                    data = r.json()
+                    pp   = data.get("pageProps", data)
+                    log.info(f"  📦 pageProps 키: {list(pp.keys()) if isinstance(pp,dict) else type(pp)}")
+                    # 재귀적으로 모든 리스트 탐색
+                    found_list = _find_race_list(pp)
+                    if found_list:
+                        log.info(f"  ✅ 재귀 탐색 → {len(found_list)}건")
+                        races = _parse_marathongo_items(found_list)
+                        if races:
+                            return races
+            except Exception as e:
+                log.warning(f"  → 실패: {e}")
+            time.sleep(DELAY)
 
-            # pageProps 안의 리스트 탐색
-            page_props = data.get("pageProps", data)
-            for key in ("raceList", "races", "list", "data", "items", "raceScheduleList"):
-                if isinstance(page_props.get(key), list) and len(page_props[key]) > 0:
-                    log.info(f"  ✅ {key} 에서 {len(page_props[key])}건 발견")
-                    # 첫 번째 아이템의 키 구조 출력
-                    sample = page_props[key][0]
-                    log.info(f"  🔍 샘플 키: {list(sample.keys()) if isinstance(sample, dict) else sample}")
-                    races = _parse_marathongo_items(page_props[key])
-                    if races:
-                        log.info(f"  → {len(races)}건")
-                        return races
-        except Exception as e:
-            log.warning(f"  → API 호출 실패: {e}")
-        time.sleep(DELAY)
-
-    log.warning("  → 데이터 수집 실패")
+    log.warning("  → 마라톤고 수집 실패 (수동 데이터 유지)")
     return races
+
+
+def _find_race_list(obj, depth=0) -> list:
+    """dict/list 구조를 재귀 탐색해서 레이스 데이터로 보이는 리스트 반환"""
+    if depth > 5:
+        return []
+    if isinstance(obj, list) and len(obj) > 2:
+        if isinstance(obj[0], dict) and any(
+            k in obj[0] for k in ("raceName","name","raceDate","date","startDate","title","raceTitle")
+        ):
+            return obj
+    if isinstance(obj, dict):
+        # 건수 기준으로 정렬된 후보 수집
+        best = []
+        for v in obj.values():
+            candidate = _find_race_list(v, depth + 1)
+            if len(candidate) > len(best):
+                best = candidate
+        return best
+    return []
 
 
 def _parse_marathongo_items(items: list) -> list[dict]:
