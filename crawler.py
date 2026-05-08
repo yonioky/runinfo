@@ -165,139 +165,110 @@ def parse_distances(raw: str) -> list[str]:
     return found or ["기타"]
 
 
-# ── 크롤러 1: 마라톤고 (Next.js) ─────────────
+# ── 크롤러 1: 마라톤고 (DOM 슬러그 추출 → 상세 fetch) ──────
 def crawl_marathongo() -> list[dict]:
-    log.info("📡 [1/3] 마라톤고 크롤링 (Next.js 방식)...")
-    BASE = "https://marathongo.co.kr"
-    races = []
+    log.info("📡 [1/3] 마라톤고 크롤링 (DOM 슬러그 방식)...")
+    BASE     = "https://marathongo.co.kr"
+    races    = []
+    build_id = ""
+    cached   = {}  # slug → 이미 인터셉트된 pageProps
 
-    # ── Step 1: Playwright로 렌더링 → __NEXT_DATA__ + API 인터셉트 ──
-    build_id      = ""
-    page_props    = {}
-    intercepted   = []
-
+    # ── Step 1: Playwright로 렌더링 + 스크롤 + 슬러그 수집 ──
     try:
         from playwright.sync_api import sync_playwright
         with sync_playwright() as p:
             browser = p.chromium.launch(headless=True)
             page    = browser.new_page()
 
-            SKIP = ("_next/static","analytics","gtag","adtrafficquality",
-                    "favicon","\.png","\.jpg","\.svg","\.woff","\.css")
-
-            def on_request(request):
-                url = request.url
-                # 정적 리소스 제외하고 모든 API 요청 로깅
-                if not any(s in url for s in SKIP):
-                    log.info(f"  ➡️  REQ: {request.method} {url}")
-
             def on_response(response):
                 try:
                     url = response.url
-                    if any(s in url for s in SKIP):
-                        return
                     ct  = response.headers.get("content-type", "")
                     if "json" not in ct:
                         return
-                    data = response.json()
-                    log.info(f"  🔗 인터셉트: {url}")
-                    intercepted.append({"url": url, "data": data})
+                    if "/raceDetail/domestic/" in url and "_next/data/" in url:
+                        slug = url.split("/raceDetail/domestic/")[1].split(".json")[0].split("?")[0]
+                        data = response.json()
+                        pp   = data.get("pageProps", {})
+                        cached[slug] = pp
+                        log.info(f"  🔗 상세 캐시: {slug}")
                 except Exception:
                     pass
 
-            page.on("request", on_request)
             page.on("response", on_response)
-            page.goto(f"{BASE}/raceSchedule/domestic", wait_until="networkidle", timeout=30000)
-            time.sleep(3)
-            html = page.content()
-            browser.close()
 
-        # __NEXT_DATA__ 추출
-        soup = BeautifulSoup(html, "lxml")
-        tag  = soup.find("script", id="__NEXT_DATA__")
-        if tag:
-            nd       = json.loads(tag.string)
-            build_id = nd.get("buildId", "")
-            page_props = nd.get("props", {}).get("pageProps", {})
-            log.info(f"  🔑 buildId: {build_id}")
-            log.info(f"  📦 pageProps 키: {list(page_props.keys())}")
+            # 전체 목록 URL (raceEnd=전체 필터)
+            page.goto(f"{BASE}/raceSchedule/domestic?raceEnd=%EC%A0%84%EC%B2%B4",
+                      wait_until="networkidle", timeout=30000)
+
+            # 스크롤 → 레이지 로딩 트리거
+            for _ in range(6):
+                page.evaluate("window.scrollBy(0, window.innerHeight)")
+                time.sleep(1.2)
+
+            # buildId 추출
+            html = page.content()
+            tag  = BeautifulSoup(html, "lxml").find("script", id="__NEXT_DATA__")
+            if tag:
+                nd       = json.loads(tag.string)
+                build_id = nd.get("buildId", "")
+                log.info(f"  🔑 buildId: {build_id}")
+
+            # 렌더링된 DOM에서 모든 레이스 상세 링크 추출
+            all_links = page.eval_on_selector_all(
+                'a[href*="/raceDetail/domestic/"]',
+                'els => els.map(el => el.href)'
+            )
+            browser.close()
 
     except Exception as e:
         log.warning(f"  Playwright 오류: {e}")
+        return []
 
-    # ── Step 2: pageProps 안에 목록이 있으면 바로 사용 ──
-    for key in ("raceList","races","list","data","items","raceScheduleList","scheduleList"):
-        if isinstance(page_props.get(key), list) and len(page_props[key]) > 0:
-            log.info(f"  ✅ pageProps[{key}] → {len(page_props[key])}건")
-            sample = page_props[key][0]
-            log.info(f"  🔍 샘플 키: {list(sample.keys()) if isinstance(sample,dict) else sample}")
-            races = _parse_marathongo_items(page_props[key])
-            if races:
-                log.info(f"  → {len(races)}건")
-                return races
+    # 슬러그 중복 제거
+    slugs = []
+    seen  = set()
+    for href in all_links:
+        if "/raceDetail/domestic/" in href:
+            slug = href.split("/raceDetail/domestic/")[1].split("?")[0].rstrip("/")
+            if slug and slug not in seen:
+                slugs.append(slug)
+                seen.add(slug)
 
-    # ── Step 3: 인터셉트된 API 응답에서 목록 추출 (가장 많은 건수 우선) ──
-    best_candidates = []
-    best_url = ""
-    for resp in intercepted:
-        data = resp["data"]
-        candidates = []
-        if isinstance(data, list) and len(data) > 2:
-            candidates = data
-        elif isinstance(data, dict):
-            # 모든 리스트 값 중 가장 길고 dict 원소를 가진 것 선택
-            for k, v in data.items():
-                if isinstance(v, list) and len(v) > 2 and isinstance(v[0] if v else None, dict):
-                    if len(v) > len(candidates):
-                        candidates = v
-                        log.info(f"  🔍 후보: {resp['url']} [{k}] → {len(v)}건")
-        if len(candidates) > len(best_candidates):
-            best_candidates = candidates
-            best_url = resp["url"]
+    log.info(f"  📌 DOM 슬러그: {len(slugs)}개 | 캐시: {len(cached)}개")
 
-    if best_candidates:
-        log.info(f"  ✅ 최적 인터셉트: {best_url} → {len(best_candidates)}건")
-        sample = best_candidates[0]
-        log.info(f"  🔍 샘플 키: {list(sample.keys()) if isinstance(sample,dict) else str(sample)[:100]}")
-        races = _parse_marathongo_items(best_candidates)
-        if races:
-            log.info(f"  → {len(races)}건 (인터셉트)")
-            return races
+    if not slugs:
+        log.warning("  → DOM에서 슬러그 추출 실패 (수동 데이터 유지)")
+        return []
 
-    # ── Step 4: api.marathongo.co.kr 직접 호출 ──
-    API_BASE = "https://api.marathongo.co.kr/marathongo"
-    api_candidates = [
-        f"{API_BASE}/race/schedule/domestic",
-        f"{API_BASE}/race/list?type=domestic",
-        f"{API_BASE}/race/domestic",
-        f"{API_BASE}/raceSchedule/domestic",
-        f"{API_BASE}/race?type=domestic",
-        f"{API_BASE}/race/schedule?raceEnd=전체",
-    ]
-    api_headers = {**HEADERS,
-                   "Origin": BASE,
-                   "Referer": f"{BASE}/raceSchedule/domestic"}
-    for api_url in api_candidates:
-        log.info(f"  📥 직접 API 호출: {api_url}")
-        try:
-            r = requests.get(api_url, headers=api_headers, timeout=15)
-            log.info(f"  HTTP {r.status_code} | {len(r.content)} bytes | ct={r.headers.get('content-type','')}")
-            if r.status_code == 200 and r.content:
-                ct = r.headers.get("content-type", "")
-                if "json" in ct or r.content[:1] in (b"[", b"{"):
-                    data = r.json()
-                    log.info(f"  📦 응답 타입: {type(data).__name__}, 미리보기: {str(data)[:150]}")
-                    found_list = _find_race_list(data) if isinstance(data, dict) else (data if isinstance(data, list) and len(data)>2 else [])
-                    if found_list:
-                        log.info(f"  ✅ {len(found_list)}건 발견!")
-                        races = _parse_marathongo_items(found_list)
-                        if races:
-                            return races
-        except Exception as e:
-            log.warning(f"  → 실패: {e}")
-        time.sleep(DELAY)
+    # ── Step 2: 슬러그별 상세 fetch ──────────────────────────
+    detail_headers = {**HEADERS, "x-nextjs-data": "1",
+                      "Referer": f"{BASE}/raceSchedule/domestic"}
+    for slug in slugs:
+        pp = cached.get(slug)
+        if pp is None and build_id:
+            detail_url = (f"{BASE}/_next/data/{build_id}"
+                          f"/raceDetail/domestic/{slug}.json?raceDetailUrl={slug}")
+            try:
+                r = requests.get(detail_url, headers=detail_headers, timeout=10)
+                if r.status_code == 200 and r.content:
+                    pp = r.json().get("pageProps", {})
+                    log.info(f"  ✓ fetch {slug} → {list(pp.keys()) if pp else '빈 응답'}")
+                else:
+                    log.warning(f"  ✗ {slug}: HTTP {r.status_code}")
+            except Exception as e:
+                log.warning(f"  ✗ {slug}: {e}")
+            time.sleep(0.3)
 
-    log.warning("  → 마라톤고 수집 실패 (수동 데이터 유지)")
+        if pp:
+            # pageProps 안에서 레이스 dict 찾기
+            race_obj = (pp.get("race") or pp.get("raceDetail") or
+                        pp.get("raceInfo") or pp.get("data") or pp)
+            if isinstance(race_obj, dict):
+                parsed = _parse_marathongo_items([race_obj])
+                races.extend(parsed)
+
+    log.info(f"  → 마라톤고 {len(races)}건")
     return races
 
 
