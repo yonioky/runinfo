@@ -53,11 +53,15 @@
       display: flex; align-items: center; justify-content: space-between;
       padding: 0 20px; height: 56px;
     }
-    .logo {
-      font-size: 1.25rem; font-weight: 800; color: var(--primary);
-      text-decoration: none; letter-spacing: -0.5px; display: flex; align-items: center; gap: 6px;
+    .logo { text-decoration: none; display: flex; align-items: center; }
+    .logo-img {
+      height: 36px; width: auto;
+      /* 다크모드: 흰 로고 그대로, 라이트모드: 어둡게 반전 */
+      filter: brightness(1);
+      transition: opacity .2s;
     }
-    .logo-sub { font-size: 0.75rem; font-weight: 400; color: var(--text-muted); letter-spacing: 0; }
+    .logo:hover .logo-img { opacity: .8; }
+    [data-theme="light"] .logo-img { filter: brightness(0); }
     nav { display: flex; align-items: center; gap: 6px; }
     .nav-link {
       text-decoration: none; color: var(--text-muted);
@@ -77,7 +81,7 @@
     /* ── HERO ── */
     .hero {
       background: linear-gradient(160deg, #1a0a10 0%, #0d0d10 40%, #080d1a 100%);
-      padding: 40px 20px 36px; text-align: center;
+      padding: 36px 20px 32px; text-align: center;
       border-bottom: 1px solid var(--border);
     }
     [data-theme="light"] .hero { background: linear-gradient(160deg, #fff0f3 0%, #f4f5f7 50%, #eef4ff 100%); }
@@ -87,15 +91,43 @@
       -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
       margin-bottom: 6px;
     }
-    .hero-sub { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 28px; }
-    .hero-stats { display: inline-flex; gap: 0; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
-    .hero-stat {
-      padding: 12px 28px; text-align: center;
-      border-right: 1px solid var(--border); background: var(--surface);
+    .hero-sub { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 24px; }
+
+    /* 접수 마감 임박 */
+    .deadline-section { max-width: 860px; margin: 0 auto; }
+    .deadline-label {
+      font-size: 0.78rem; font-weight: 700; color: var(--text-muted);
+      text-align: left; margin-bottom: 10px; letter-spacing: .4px;
     }
-    .hero-stat:last-child { border-right: none; }
-    .hero-stat strong { display: block; font-size: 1.5rem; font-weight: 800; color: var(--primary); }
-    .hero-stat span   { font-size: 0.72rem; color: var(--text-muted); font-weight: 500; }
+    .deadline-cards {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+    }
+    .dl-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; padding: 14px 16px;
+      text-align: left; cursor: pointer;
+      transition: border-color .15s, transform .15s;
+      position: relative; overflow: hidden;
+    }
+    .dl-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+    }
+    .dl-card:hover { border-color: var(--primary); transform: translateY(-2px); }
+    .dl-card-name { font-size: 0.88rem; font-weight: 700; color: var(--text); margin-bottom: 6px; line-height: 1.35;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .dl-card-meta { display: flex; align-items: center; justify-content: space-between; }
+    .dl-card-date { font-size: 0.72rem; color: var(--text-muted); }
+    .dl-card-dday {
+      font-size: 0.72rem; font-weight: 800; padding: 2px 8px; border-radius: 6px;
+      background: var(--primary); color: #fff;
+    }
+    .dl-card-dday.yellow { background: var(--accent); color: #000; }
+    .dl-empty { font-size: 0.85rem; color: var(--text-muted); text-align: center; padding: 20px 0; grid-column: 1/-1; }
+
+    @media (max-width: 600px) {
+      .deadline-cards { grid-template-columns: 1fr; }
+    }
 
     /* ── TABS ── */
     .tab-bar { background: var(--surface); border-bottom: 1px solid var(--border); }
@@ -265,8 +297,7 @@
     /* ── MOBILE ── */
     @media (max-width: 600px) {
       .hero-title { font-size: 1.4rem; }
-      .hero-stats { flex-direction: row; }
-      .hero-stat  { padding: 10px 16px; }
+
       .race-right { display: none; }
       .race-date  { width: 68px; min-width: 68px; }
       .rd-day     { font-size: 1.5rem; }
@@ -279,8 +310,7 @@
 <header>
   <div class="header-inner">
     <a class="logo" href="#">
-      🏃 JOYFULRUN
-      <span class="logo-sub">마라톤 대회 정보</span>
+      <img src="logo.png" alt="JOYFULRUN" class="logo-img">
     </a>
     <nav>
       <button class="theme-btn" id="theme-btn" onclick="toggleTheme()">☀️ 라이트</button>
@@ -292,10 +322,10 @@
 <section class="hero">
   <div class="hero-title">마라톤 대회 정보 한눈에</div>
   <p class="hero-sub">국내외 마라톤·러닝 대회 일정을 모아드립니다</p>
-  <div class="hero-stats">
-    <div class="hero-stat"><strong id="stat-domestic">0</strong><span>국내</span></div>
-    <div class="hero-stat"><strong id="stat-intl">0</strong><span>해외</span></div>
-    <div class="hero-stat"><strong id="stat-open">0</strong><span>접수중</span></div>
+  <!-- 접수 마감 임박 -->
+  <div class="deadline-section">
+    <div class="deadline-label">⏰ 접수 마감 임박</div>
+    <div class="deadline-cards" id="deadline-cards"></div>
   </div>
 </section>
 
@@ -435,24 +465,45 @@ function getDday(dateStr) {
 }
 
 // ════════════════════════════════
-//  통계
+//  접수 마감 임박 (상위 3개)
 // ════════════════════════════════
 function updateStats() {
-  const today = todayStr();
-  const future = RACES.filter(r => r.date >= today);
-  countUp('stat-domestic', future.filter(r => r.type === 'domestic').length);
-  countUp('stat-intl',     future.filter(r => r.type === 'intl').length);
-  countUp('stat-open',     future.filter(r => r.status === 'open').length);
+  renderDeadlines();
 }
-function countUp(id, target) {
-  let n = 0;
-  const el = document.getElementById(id);
-  if (!el) return;
-  const iv = setInterval(() => {
-    n = Math.min(n + Math.ceil(target / 20), target);
-    el.textContent = n;
-    if (n >= target) clearInterval(iv);
-  }, 40);
+
+function renderDeadlines() {
+  const today = todayStr();
+  const container = document.getElementById('deadline-cards');
+  if (!container) return;
+
+  // 접수중(open)이면서 마감일이 있고 오늘 이후인 것만, 마감 가까운 순 정렬
+  const candidates = RACES
+    .filter(r => r.status === 'open' && r.regEnd && r.regEnd >= today && r.date >= today)
+    .sort((a, b) => a.regEnd.localeCompare(b.regEnd))
+    .slice(0, 3);
+
+  if (!candidates.length) {
+    container.innerHTML = '<div class="dl-empty">현재 접수 마감 임박 대회가 없습니다.</div>';
+    return;
+  }
+
+  container.innerHTML = candidates.map(r => {
+    const [y, m, d] = r.regEnd.split('-').map(Number);
+    const end   = new Date(y, m - 1, d);
+    const now   = new Date(); now.setHours(0,0,0,0);
+    const diff  = Math.round((end - now) / 86400000);
+    const label = diff === 0 ? 'D-DAY' : `D-${diff}`;
+    const cls   = diff <= 7 ? '' : 'yellow';
+    const naverUrl = `https://search.naver.com/search.naver?query=${encodeURIComponent(r.name)}`;
+    return `
+      <div class="dl-card" onclick="window.open('${naverUrl}','_blank')">
+        <div class="dl-card-name">${r.name}</div>
+        <div class="dl-card-meta">
+          <span class="dl-card-date">마감 ${r.regEnd}</span>
+          <span class="dl-card-dday ${cls}">${label}</span>
+        </div>
+      </div>`;
+  }).join('');
 }
 
 // ════════════════════════════════
