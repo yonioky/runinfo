@@ -55,13 +55,12 @@
     }
     .logo { text-decoration: none; display: flex; align-items: center; }
     .logo-img {
-      height: 36px; width: auto;
-      /* 다크모드: 흰 로고 그대로, 라이트모드: 어둡게 반전 */
-      filter: brightness(1);
+      height: 38px; width: auto;
+      filter: invert(1);   /* 다크모드: 검정→흰색 */
       transition: opacity .2s;
     }
-    .logo:hover .logo-img { opacity: .8; }
-    [data-theme="light"] .logo-img { filter: brightness(0); }
+    .logo:hover .logo-img { opacity: .75; }
+    [data-theme="light"] .logo-img { filter: invert(0); } /* 라이트모드: 원본 그대로 */
     nav { display: flex; align-items: center; gap: 6px; }
     .nav-link {
       text-decoration: none; color: var(--text-muted);
@@ -85,13 +84,15 @@
       border-bottom: 1px solid var(--border);
     }
     [data-theme="light"] .hero { background: linear-gradient(160deg, #fff0f3 0%, #f4f5f7 50%, #eef4ff 100%); }
-    .hero-title {
-      font-size: 1.8rem; font-weight: 900; letter-spacing: -1px;
-      background: linear-gradient(90deg, var(--primary), var(--accent));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-      margin-bottom: 6px;
+    .hero-logo {
+      width: 220px; height: auto;
+      filter: invert(1);         /* 다크: 검정→흰색 */
+      margin-bottom: 10px;
+      display: block; margin-left: auto; margin-right: auto;
+      drop-shadow: 0 4px 24px rgba(255,77,109,.3);
     }
-    .hero-sub { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 24px; }
+    [data-theme="light"] .hero-logo { filter: invert(0); }
+    .hero-sub { font-size: 0.88rem; color: var(--text-muted); margin-bottom: 24px; }
 
     /* 접수 마감 임박 */
     .deadline-section { max-width: 860px; margin: 0 auto; }
@@ -320,7 +321,7 @@
 
 <!-- ── HERO ── -->
 <section class="hero">
-  <div class="hero-title">마라톤 대회 정보 한눈에</div>
+  <img src="logo.png" alt="JOYFULRUN" class="hero-logo">
   <p class="hero-sub">국내외 마라톤·러닝 대회 일정을 모아드립니다</p>
   <!-- 접수 마감 임박 -->
   <div class="deadline-section">
