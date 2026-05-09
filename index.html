@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>RunInfo — 마라톤 대회 정보</title>
+  <title>JOYFULRUN — 마라톤 대회 정보</title>
+  <meta name="description" content="국내외 마라톤·러닝 대회 일정 정보 - JOYFULRUN"/>
   <style>
     /* ── CSS 변수 ── */
     :root {
@@ -260,7 +261,7 @@
 <header>
   <div class="header-inner">
     <a class="logo" href="#">
-      🏃 RunInfo
+      🏃 JOYFULRUN
       <span class="logo-sub">마라톤 대회 정보</span>
     </a>
     <nav>
@@ -325,7 +326,7 @@
 </div>
 
 <footer>
-  <strong>RunInfo</strong> — 대회 정보는 각 주관사 공식 사이트 기준이며 변경될 수 있습니다.
+  <strong>JOYFULRUN</strong> — 대회 정보는 각 주관사 공식 사이트 기준이며 변경될 수 있습니다.
 </footer>
 
 <script>
@@ -563,9 +564,9 @@ function renderRaces() {
     if (!Array.isArray(data) || data.length === 0) throw new Error('빈 데이터');
     RACES.length = 0;
     data.forEach(r => RACES.push(r));
-    console.log('[RunInfo] 로드 완료:', data.length, '건');
+    console.log('[JOYFULRUN] 로드 완료:', data.length, '건');
   } catch(e) {
-    console.warn('[RunInfo] races.json 실패 → 샘플 데이터:', e.message);
+    console.warn('[JOYFULRUN] races.json 실패 → 샘플 데이터:', e.message);
   }
   updateStats();
   buildFilters();
