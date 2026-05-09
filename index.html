@@ -131,6 +131,24 @@
     .chip.active { background: var(--primary); color: #fff; border-color: var(--primary); }
     .chip.region-chip.active { background: var(--secondary); border-color: var(--secondary); }
     .chip.dist-chip.active { background: var(--accent); border-color: var(--accent); color: #000; }
+    .chip.month-chip.active { background: var(--primary); border-color: var(--primary); color: #fff; }
+
+    /* 검색창 */
+    .search-wrap { position: relative; display: flex; align-items: center; flex: 1; max-width: 360px; }
+    .search-input {
+      width: 100%; padding: 6px 32px 6px 14px;
+      border: 1px solid var(--border); border-radius: 20px;
+      background: var(--surface2); color: var(--text);
+      font-size: 0.85rem; outline: none; transition: border-color .15s;
+    }
+    .search-input::placeholder { color: var(--text-muted); }
+    .search-input:focus { border-color: var(--primary); }
+    .search-clear {
+      position: absolute; right: 10px;
+      background: none; border: none; color: var(--text-muted);
+      font-size: 0.75rem; cursor: pointer; padding: 0; line-height: 1;
+    }
+    .search-clear:hover { color: var(--primary); }
 
     /* ── CONTENT ── */
     .content { max-width: 1080px; margin: 0 auto; padding: 20px 20px 48px; }
@@ -265,8 +283,6 @@
       <span class="logo-sub">마라톤 대회 정보</span>
     </a>
     <nav>
-      <button class="nav-link active" id="nav-domestic" onclick="switchTab('domestic'); setNavActive(this)">국내</button>
-      <button class="nav-link"        id="nav-intl"     onclick="switchTab('intl');     setNavActive(this)">해외</button>
       <button class="theme-btn" id="theme-btn" onclick="toggleTheme()">☀️ 라이트</button>
     </nav>
   </div>
@@ -294,11 +310,26 @@
 <!-- ── FILTERS ── -->
 <div class="filters-wrap">
   <div class="filters-inner">
+    <!-- 텍스트 검색 -->
+    <div class="filter-row">
+      <span class="filter-label">검색</span>
+      <div class="search-wrap">
+        <input id="search-input" class="search-input" type="text"
+          placeholder="대회명, 지역, 주관사 검색..."
+          oninput="activeSearch=this.value.trim(); renderRaces()">
+        <button class="search-clear" id="search-clear" onclick="clearSearch()" style="display:none">✕</button>
+      </div>
+    </div>
+    <!-- 월별 -->
+    <div class="filter-row" id="month-filter"><span class="filter-label">월</span></div>
+    <!-- 지역 -->
     <div class="filter-row" id="region-filter"><span class="filter-label">지역</span></div>
+    <!-- 상태 -->
     <div class="filter-row">
       <span class="filter-label">상태</span>
       <div id="status-filter" style="display:flex;gap:6px;flex-wrap:wrap;"></div>
     </div>
+    <!-- 거리 -->
     <div class="filter-row">
       <span class="filter-label">거리</span>
       <div id="dist-filter" style="display:flex;gap:6px;flex-wrap:wrap;"></div>
@@ -346,6 +377,8 @@ let currentTab   = 'domestic';
 let activeRegion = '전체';
 let activeStatus = '전체';
 let activeDist   = '전체';
+let activeMonth  = '전체';
+let activeSearch = '';
 let showPast     = false;
 
 function todayStr() {
@@ -353,7 +386,7 @@ function todayStr() {
   return `${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}-${String(t.getDate()).padStart(2,'0')}`;
 }
 
-const DOMESTIC_REGIONS = ['전체','서울','경기','충청','영남','전라','제주','강원'];
+const DOMESTIC_REGIONS = ['전체','서울','강원','경기','영남','전라','충청','제주'];
 const INTL_REGIONS     = ['전체','아시아','유럽','북미','오세아니아'];
 const STATUSES         = ['전체','접수전','접수중','접수마감'];
 const DISTANCES        = ['전체','풀','하프','10km','5km','울트라','트레일'];
@@ -435,8 +468,12 @@ function setNavActive(el) {
 // ════════════════════════════════
 function switchTab(tab) {
   currentTab = tab;
-  activeRegion = activeStatus = activeDist = '전체';
+  activeRegion = activeStatus = activeDist = activeMonth = '전체';
+  activeSearch = '';
   showPast = false;
+  const si = document.getElementById('search-input');
+  if (si) { si.value = ''; }
+  document.getElementById('search-clear').style.display = 'none';
   const btn = document.getElementById('past-toggle-btn');
   if (btn) { btn.classList.remove('on'); btn.textContent = '📅 지난 대회 포함'; }
   document.getElementById('tab-domestic').classList.toggle('active', tab === 'domestic');
@@ -445,21 +482,53 @@ function switchTab(tab) {
   renderRaces();
 }
 
+function clearSearch() {
+  activeSearch = '';
+  const si = document.getElementById('search-input');
+  if (si) si.value = '';
+  document.getElementById('search-clear').style.display = 'none';
+  renderRaces();
+}
+
 // ════════════════════════════════
 //  지난 대회 토글
 // ════════════════════════════════
 function togglePast() {
   showPast = !showPast;
+  activeMonth = '전체';  // 지난 대회 토글 시 월 필터 리셋
   const btn = document.getElementById('past-toggle-btn');
   btn.classList.toggle('on', showPast);
   btn.textContent = showPast ? '📅 지난 대회 숨기기' : '📅 지난 대회 포함';
+  buildMonth();
   renderRaces();
 }
 
 // ════════════════════════════════
 //  필터 빌드
 // ════════════════════════════════
-function buildFilters() { buildRegion(); buildStatus(); buildDist(); }
+function buildFilters() { buildMonth(); buildRegion(); buildStatus(); buildDist(); }
+
+function buildMonth() {
+  const wrap = document.getElementById('month-filter');
+  const label = wrap.querySelector('.filter-label');
+  wrap.innerHTML = ''; wrap.appendChild(label);
+  // 데이터에 실제 존재하는 월만 표시
+  const today = todayStr();
+  const base  = RACES.filter(r => r.type === currentTab && (showPast || r.date >= today));
+  const months = [...new Set(base.map(r => r.date.slice(0,7)))].sort();
+  const labels = ['전체', ...months.map(m => {
+    const [y, mo] = m.split('-');
+    return `${y}.${mo}`;
+  })];
+  const values = ['전체', ...months];
+  labels.forEach((label2, i) => {
+    const b = document.createElement('button');
+    b.className = 'chip month-chip' + (values[i] === activeMonth ? ' active' : '');
+    b.textContent = label2;
+    b.onclick = () => { activeMonth = values[i]; buildMonth(); renderRaces(); };
+    wrap.appendChild(b);
+  });
+}
 function buildRegion() {
   const list = currentTab === 'domestic' ? DOMESTIC_REGIONS : INTL_REGIONS;
   const wrap = document.getElementById('region-filter');
@@ -501,6 +570,7 @@ function renderRaces() {
   const today = todayStr();
   let list = RACES.filter(r => r.type === currentTab);
   if (!showPast) list = list.filter(r => r.date >= today);
+  if (activeMonth  !== '전체') list = list.filter(r => r.date.slice(0,7) === activeMonth);
   if (activeRegion !== '전체') list = list.filter(r => r.region === activeRegion);
   if (activeStatus !== '전체') list = list.filter(r => STATUS_KR[r.status] === activeStatus);
   if (activeDist   !== '전체') {
@@ -508,6 +578,18 @@ function renderRaces() {
       if (activeDist === '울트라') return ['100km','50km','울트라'].includes(d);
       return d === activeDist;
     }));
+  }
+  // 텍스트 검색 (대회명 + 장소 + 주관사)
+  if (activeSearch) {
+    const kw = activeSearch.toLowerCase();
+    list = list.filter(r =>
+      (r.name      || '').toLowerCase().includes(kw) ||
+      (r.location  || '').toLowerCase().includes(kw) ||
+      (r.organizer || '').toLowerCase().includes(kw)
+    );
+    document.getElementById('search-clear').style.display = '';
+  } else {
+    document.getElementById('search-clear').style.display = 'none';
   }
   const sort = document.getElementById('sort-select').value;
   list.sort((a, b) => sort === 'date' ? a.date.localeCompare(b.date) : a.name.localeCompare(b.name));
