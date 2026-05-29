@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>마라톤 입문 가이드 — JOYFULRUN</title>
+  <meta name="description" content="처음 마라톤을 준비하는 분들을 위한 완벽 입문 가이드. 대회 선택부터 훈련 방법, 당일 준비까지 단계별로 알려드립니다."/>
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://joyfulrun.codeeden.kr/guide.html" />
+  <meta property="og:title" content="마라톤 입문 가이드 — JOYFULRUN" />
+  <meta property="og:description" content="처음 마라톤을 준비하는 분들을 위한 완벽 입문 가이드. 대회 선택부터 훈련 방법, 당일 준비까지." />
+  <meta property="og:image" content="https://joyfulrun.codeeden.kr/logo.png" />
+  <meta name="google-adsense-account" content="ca-pub-3081734032955539">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3081734032955539" crossorigin="anonymous"></script>
+  <style>
+    :root {
+      --primary: #ff4d6d; --accent: #ffa94d; --secondary: #4dabf7;
+      --bg: #0d0d10; --surface: #16161a; --surface2: #1e1e24;
+      --text: #e8e8f0; --text-muted: #6b6b80; --border: #2a2a34;
+    }
+    [data-theme="light"] {
+      --bg: #f4f5f7; --surface: #ffffff; --surface2: #f0f1f3;
+      --text: #1a1a2e; --text-muted: #7a7a90; --border: #e0e0e8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system,'Segoe UI','Malgun Gothic',sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; }
+    header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 20px; position: sticky; top: 0; z-index: 100; }
+    .header-inner { max-width: 860px; margin: 0 auto; height: 56px; display: flex; align-items: center; justify-content: space-between; }
+    .logo { display: flex; align-items: center; gap: 8px; text-decoration: none; color: var(--text); font-weight: 800; font-size: 1.1rem; }
+    .logo-img { height: 28px; }
+    .theme-btn { background: none; border: 1px solid var(--border); border-radius: 6px; padding: 5px 12px; color: var(--text-muted); cursor: pointer; font-size: 0.82rem; }
+    nav { display: flex; align-items: center; gap: 16px; }
+    nav a { color: var(--text-muted); text-decoration: none; font-size: 0.88rem; font-weight: 600; }
+    nav a:hover { color: var(--primary); }
+
+    .container { max-width: 860px; margin: 0 auto; padding: 48px 20px 80px; }
+    h1 { font-size: 2rem; font-weight: 900; margin-bottom: 8px; background: linear-gradient(90deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .subtitle { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 48px; }
+    h2 { font-size: 1.25rem; font-weight: 800; color: var(--text); margin: 48px 0 16px; padding-left: 12px; border-left: 3px solid var(--primary); }
+    h3 { font-size: 1rem; font-weight: 700; color: var(--accent); margin: 24px 0 8px; }
+    p { color: var(--text-muted); margin-bottom: 14px; font-size: 0.95rem; }
+    .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin: 20px 0; }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+    .card-icon { font-size: 1.8rem; margin-bottom: 10px; }
+    .card-title { font-size: 0.92rem; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+    .card-desc { font-size: 0.82rem; color: var(--text-muted); line-height: 1.6; }
+    .tip-box { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px 24px; margin: 20px 0; border-left: 3px solid var(--accent); }
+    .tip-box p { margin-bottom: 6px; }
+    .tip-box p:last-child { margin-bottom: 0; }
+    table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 0.88rem; }
+    th { background: var(--surface2); color: var(--text); padding: 10px 14px; text-align: left; font-weight: 700; border-bottom: 1px solid var(--border); }
+    td { padding: 10px 14px; color: var(--text-muted); border-bottom: 1px solid var(--border); }
+    tr:last-child td { border-bottom: none; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 5px; font-size: 0.75rem; font-weight: 700; margin-right: 4px; }
+    .b-full { background: rgba(255,77,109,.15); color: #ff4d6d; }
+    .b-half { background: rgba(77,171,247,.15); color: #4dabf7; }
+    .b-10k { background: rgba(255,169,77,.15); color: #ffa94d; }
+    .back-btn { display: inline-flex; align-items: center; gap: 6px; color: var(--text-muted); text-decoration: none; font-size: 0.88rem; margin-bottom: 32px; }
+    .back-btn:hover { color: var(--primary); }
+    footer { text-align: center; padding: 32px 16px; color: var(--text-muted); font-size: 0.82rem; border-top: 1px solid var(--border); }
+    @media (max-width: 600px) { h1 { font-size: 1.5rem; } .card-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a class="logo" href="/">
+      <img src="logo.png" alt="JOYFULRUN" class="logo-img">
+      JOYFULRUN
+    </a>
+    <nav>
+      <a href="/">대회 일정</a>
+      <button class="theme-btn" id="theme-btn" onclick="toggleTheme()">☀️ 라이트</button>
+    </nav>
+  </div>
+</header>
+
+<div class="container">
+  <a class="back-btn" href="/">← 대회 일정으로 돌아가기</a>
+
+  <h1>마라톤 입문 가이드</h1>
+  <p class="subtitle">처음 대회를 준비하는 분들을 위해 대회 선택부터 완주까지 단계별로 정리했습니다.</p>
+
+  <!-- 1. 거리 선택 -->
+  <h2>1단계 — 나에게 맞는 거리 선택하기</h2>
+  <p>마라톤 대회는 거리에 따라 난이도와 훈련 기간이 크게 달라집니다. 처음 도전한다면 무리하게 풀코스부터 시작하기보다 5km나 10km로 시작해서 몸의 반응을 확인하는 것이 좋습니다.</p>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-icon">🟢</div>
+      <div class="card-title"><span class="badge b-10k">5km / 10km</span> 입문</div>
+      <div class="card-desc">운동 습관이 없어도 4~8주 훈련으로 완주 가능. 대회 분위기를 처음 경험하기에 가장 적합합니다.</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🟡</div>
+      <div class="card-title"><span class="badge b-half">하프 (21.0975km)</span> 중급</div>
+      <div class="card-desc">꾸준한 훈련 3~4개월 필요. 10km를 편하게 뛸 수 있다면 도전해볼 만합니다.</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔴</div>
+      <div class="card-title"><span class="badge b-full">풀코스 (42.195km)</span> 고급</div>
+      <div class="card-desc">최소 6개월 이상의 체계적인 훈련이 필요합니다. 하프를 2시간 30분 이내로 완주한 경험이 있어야 권장됩니다.</div>
+    </div>
+  </div>
+
+  <!-- 2. 대회 신청 -->
+  <h2>2단계 — 대회 신청 전 체크리스트</h2>
+  <p>인기 있는 대회는 접수 시작 후 수 분 내에 마감됩니다. 원하는 대회를 놓치지 않으려면 접수일을 미리 달력에 저장해두는 것이 중요합니다.</p>
+
+  <div class="tip-box">
+    <h3>📌 신청 전 확인사항</h3>
+    <p>✔ 대회 날짜와 장소 — 이동 및 숙박이 필요한지 미리 확인</p>
+    <p>✔ 접수 마감일 — JOYFULRUN에서 "접수 마감 임박" 섹션 확인</p>
+    <p>✔ 참가비 환불 정책 — 대회마다 환불 기준이 다릅니다</p>
+    <p>✔ 제한 시간 — 특히 풀코스는 6시간 컷이 일반적이나 대회마다 다름</p>
+    <p>✔ 코스 난이도 — 평지형인지, 고저 차가 큰 코스인지 사전에 확인</p>
+  </div>
+
+  <!-- 3. 훈련 계획 -->
+  <h2>3단계 — 훈련 계획 세우기</h2>
+  <p>무작정 오래 뛰는 것보다 체계적인 훈련 계획이 부상을 예방하고 완주 성공률을 높입니다. 주 3~4회 훈련을 기본으로 하며, 주간 거리를 10% 이상 급격히 늘리지 않는 것이 원칙입니다.</p>
+
+  <h3>10km 입문자 8주 훈련 계획 (예시)</h3>
+  <table>
+    <thead>
+      <tr><th>주차</th><th>월</th><th>수</th><th>금</th><th>주말</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>1~2주</td><td>걷기 30분</td><td>달리기 20분</td><td>달리기 20분</td><td>걷기+달리기 40분</td></tr>
+      <tr><td>3~4주</td><td>달리기 25분</td><td>달리기 30분</td><td>달리기 25분</td><td>달리기 45분</td></tr>
+      <tr><td>5~6주</td><td>달리기 30분</td><td>달리기 35분</td><td>달리기 30분</td><td>장거리 6~8km</td></tr>
+      <tr><td>7주</td><td>달리기 30분</td><td>달리기 40분</td><td>달리기 30분</td><td>장거리 9~10km</td></tr>
+      <tr><td>8주 (대회 주)</td><td>달리기 20분</td><td>달리기 15분</td><td>휴식</td><td>🏁 대회 당일</td></tr>
+    </tbody>
+  </table>
+
+  <!-- 4. 장비 -->
+  <h2>4단계 — 필수 장비 준비</h2>
+  <p>마라톤에서 가장 중요한 장비는 단연 러닝화입니다. 자신의 발 모양과 달리기 스타일에 맞는 신발을 선택하는 것이 부상 예방의 핵심입니다.</p>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-icon">👟</div>
+      <div class="card-title">러닝화</div>
+      <div class="card-desc">전문 러닝화 매장에서 족압 분석을 받아보세요. 대회 전 최소 2~3주는 착화해서 길들이는 과정이 필요합니다.</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">👕</div>
+      <div class="card-title">기능성 의류</div>
+      <div class="card-desc">땀 흡수·속건 소재의 의류를 착용하세요. 면 소재는 땀에 젖으면 무거워지고 피부 쓸림을 유발합니다.</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">⌚</div>
+      <div class="card-title">GPS 워치 / 앱</div>
+      <div class="card-desc">페이스 관리가 완주의 핵심입니다. 스마트워치나 스마트폰 앱으로 km당 페이스를 꼭 확인하세요.</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🧴</div>
+      <div class="card-title">기타 필수품</div>
+      <div class="card-desc">장거리(하프 이상)에는 에너지젤, 바셀린(허벅지·겨드랑이 쓸림 방지), 압축 스타킹도 챙기세요.</div>
+    </div>
+  </div>
+
+  <!-- 5. 대회 당일 -->
+  <h2>5단계 — 대회 당일 주의사항</h2>
+
+  <div class="tip-box">
+    <h3>🌅 대회 전날 & 당일 아침</h3>
+    <p>✔ 전날 밤 — 무리한 스트레칭이나 과식은 피하고 충분한 수면을 취하세요.</p>
+    <p>✔ 식사 — 출발 2~3시간 전에 소화되기 쉬운 탄수화물 위주로 적당히 먹습니다. 새로운 음식은 피하세요.</p>
+    <p>✔ 출발 전 — 워밍업 10분과 동적 스트레칭으로 몸을 깨워주세요.</p>
+    <p>✔ 페이스 — 처음 5km는 목표 페이스보다 천천히 시작하세요. 초반 오버페이스가 실패의 가장 큰 원인입니다.</p>
+    <p>✔ 보급소 — 목이 마르지 않아도 보급소마다 물을 조금씩 마시는 습관이 중요합니다.</p>
+  </div>
+
+  <!-- 6. 국내 주요 대회 -->
+  <h2>국내 주요 마라톤 대회 소개</h2>
+  <p>국내에는 규모와 특색이 다양한 마라톤 대회가 연중 열립니다. 봄(3~5월)과 가을(9~11월)이 날씨 조건이 좋아 대회가 집중되는 시기입니다.</p>
+
+  <table>
+    <thead>
+      <tr><th>대회명</th><th>시기</th><th>특징</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>서울마라톤 (동아)</td><td>3월</td><td>국내 최대 규모, 세계육상연맹 플래티넘 라벨 대회</td></tr>
+      <tr><td>경주 벚꽃마라톤</td><td>4월</td><td>벚꽃길 코스, 역사 도시 경관과 함께하는 봄 대회</td></tr>
+      <tr><td>조선일보 춘천마라톤</td><td>10월</td><td>호반 코스, 가을 단풍과 함께하는 국내 대표 가을 대회</td></tr>
+      <tr><td>JTBC 서울마라톤</td><td>11월</td><td>한강 야경 코스, 야간 러닝 특유의 분위기</td></tr>
+      <tr><td>MBN 서울마라톤</td><td>11월</td><td>도심 코스, 하프·10km 등 다양한 거리 운영</td></tr>
+    </tbody>
+  </table>
+
+  <p>더 많은 대회 일정과 접수 정보는 <a href="/" style="color:var(--primary);">JOYFULRUN 대회 일정 페이지</a>에서 확인하세요.</p>
+
+</div>
+
+<footer>
+  <p>© 2026 JOYFULRUN. All rights reserved. &nbsp;|&nbsp; <a href="/privacy.html" style="color:var(--text-muted);text-decoration:underline;">개인정보처리방침</a></p>
+  <p style="margin-top:6px;">본 사이트는 공개된 마라톤 대회 정보를 제공하며, 광고 수익으로 운영됩니다.</p>
+</footer>
+
+<script>
+  function toggleTheme() {
+    const html = document.documentElement;
+    const isDark = html.getAttribute('data-theme') === 'dark';
+    html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+    document.getElementById('theme-btn').textContent = isDark ? '🌙 다크' : '☀️ 라이트';
+    localStorage.setItem('theme', isDark ? 'light' : 'dark');
+  }
+  const saved = localStorage.getItem('theme');
+  if (saved) {
+    document.documentElement.setAttribute('data-theme', saved);
+    document.getElementById('theme-btn').textContent = saved === 'light' ? '🌙 다크' : '☀️ 라이트';
+  }
+</script>
+</body>
+</html>
