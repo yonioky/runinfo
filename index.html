@@ -486,7 +486,7 @@ function renderLatest() {
   if (!section || !list) return;
 
   const items = RACES
-    .filter(r => r.status === 'upcoming')
+    .filter(r => r.latestInfo === true && (!r.regStart || r.regStart > todayStr()))
     .sort((a, b) => (a.regStart || '9999').localeCompare(b.regStart || '9999'));
 
   if (!items.length) { section.style.display = 'none'; return; }
