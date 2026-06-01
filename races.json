@@ -17921,5 +17921,22 @@
     "url": "#",
     "notice": "7/1(수)~7/3(금) 본접수 래플 신청, 7/7(화) 당첨자 발표. 6/23(화) 포러너170/70 스페셜팩 먼저 오픈",
     "latestInfo": true
+  },
+  {
+    "type": "domestic",
+    "date": "2027-03-21",
+    "weekday": "일",
+    "name": "2027 서울레이스 10K",
+    "location": "서울 | 잠실종합운동장 ~ 가락시장",
+    "startTime": "",
+    "distances": ["10km"],
+    "region": "서울",
+    "status": "upcoming",
+    "regStart": "2026-06-03",
+    "regEnd": "",
+    "organizer": "동마클럽",
+    "url": "https://dongma.club/",
+    "notice": "6/3(수) 오후 7시 접수 오픈. 참가비 10만원",
+    "latestInfo": true
   }
 ]
