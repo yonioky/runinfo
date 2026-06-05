@@ -15709,6 +15709,25 @@
   },
   {
     "type": "domestic",
+    "date": "2026-06-25",
+    "weekday": "목",
+    "name": "디즈니 버추얼런 Everywhere!",
+    "location": "가상 (Virtual)",
+    "startTime": "",
+    "distances": [
+      "virtual"
+    ],
+    "region": "기타",
+    "status": "upcoming",
+    "regStart": "2026-06-11",
+    "regEnd": "",
+    "organizer": "",
+    "url": "https://disneyrunincheon2026.com",
+    "notice": "1차 토이스토리 6/25~7/10(티켓6/11) | 2차 코코마니 7/8~7/31(티켓6/11) | 3차 주토피아 8/12~8/24(티켓7/11)",
+    "latestInfo": true
+  },
+  {
+    "type": "domestic",
     "date": "2026-06-27",
     "weekday": "토",
     "name": "2026 전마협 10km 연대별 최강전",
@@ -17438,6 +17457,23 @@
   },
   {
     "type": "domestic",
+    "date": "2026-10-24",
+    "weekday": "토",
+    "name": "디즈니런 2026 인천",
+    "location": "인천 상상플랫폼",
+    "startTime": "",
+    "distances": [],
+    "region": "인천",
+    "status": "upcoming",
+    "regStart": "2026-08-31",
+    "regEnd": "",
+    "organizer": "",
+    "url": "https://disneyrunincheon2026.com",
+    "notice": "티켓 오픈 8/31(화) 예정 | 공홈 6/5 오픈",
+    "latestInfo": true
+  },
+  {
+    "type": "domestic",
     "date": "2026-10-25",
     "weekday": "일",
     "name": "2026 조선일보 춘천마라톤",
@@ -17813,6 +17849,26 @@
   },
   {
     "type": "domestic",
+    "date": "2026-11-15",
+    "weekday": "일",
+    "name": "2026 Garmin Run Korea",
+    "location": "경기 | 고양종합운동장",
+    "startTime": "",
+    "distances": [
+      "하프",
+      "10km"
+    ],
+    "region": "경기",
+    "status": "upcoming",
+    "regStart": "2026-07-01",
+    "regEnd": "2026-07-03",
+    "organizer": "Garmin",
+    "url": "#",
+    "notice": "7/1(수)~7/3(금) 본접수 래플 신청, 7/7(화) 당첨자 발표. 6/23(화) 포러너170/70 스페셜팩 먼저 오픈",
+    "latestInfo": true
+  },
+  {
+    "type": "domestic",
     "date": "2026-11-22",
     "weekday": "일",
     "name": "2026 수원 마라톤",
@@ -17904,32 +17960,14 @@
   },
   {
     "type": "domestic",
-    "date": "2026-11-15",
-    "weekday": "일",
-    "name": "2026 Garmin Run Korea",
-    "location": "경기 | 고양종합운동장",
-    "startTime": "",
-    "distances": [
-      "하프",
-      "10km"
-    ],
-    "region": "경기",
-    "status": "upcoming",
-    "regStart": "2026-07-01",
-    "regEnd": "2026-07-03",
-    "organizer": "Garmin",
-    "url": "#",
-    "notice": "7/1(수)~7/3(금) 본접수 래플 신청, 7/7(화) 당첨자 발표. 6/23(화) 포러너170/70 스페셜팩 먼저 오픈",
-    "latestInfo": true
-  },
-  {
-    "type": "domestic",
     "date": "2027-03-21",
     "weekday": "일",
     "name": "2027 서울마라톤(동마) 10K",
     "location": "서울 | 잠실종합운동장 ~ 가락시장",
     "startTime": "",
-    "distances": ["10km"],
+    "distances": [
+      "10km"
+    ],
     "region": "서울",
     "status": "upcoming",
     "regStart": "2026-06-03",
