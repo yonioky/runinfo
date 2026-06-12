@@ -17997,5 +17997,26 @@
     "source": "instagram @runsosik",
     "notice": "접수 6/15(월) 14시 오픈 ~ 7/10(금) 17시 마감 (선착순). 하프 7,000명 8만원 / 10km 5,000명 6만원. 광화문·남대문·청계천 차 없는 도심 코스",
     "latestInfo": true
+  },
+  {
+    "type": "domestic",
+    "date": "2026-10-05",
+    "weekday": "월",
+    "name": "2026 제23회 강남 국제 평화 마라톤",
+    "location": "서울 | 강남",
+    "startTime": "08:00",
+    "distances": [
+      "풀",
+      "하프",
+      "10km",
+      "5km"
+    ],
+    "region": "서울",
+    "status": "upcoming",
+    "regStart": "",
+    "regEnd": "",
+    "organizer": "",
+    "url": "",
+    "notice": "참가 접수 공개 예정. 풀 3만원 / 하프·10km 2만원 / 5km(걷기) 1만원. 총 1만명 참여 가능, 가성비 마라톤"
   }
 ]
