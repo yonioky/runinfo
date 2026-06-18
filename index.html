@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko" data-theme="dark">
+<html lang="ko" data-theme="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -416,7 +416,7 @@
     </a>
     <nav>
       <a href="/guide.html" style="color:var(--text-muted);text-decoration:none;font-size:0.88rem;font-weight:600;">입문 가이드</a>
-      <button class="theme-btn" id="theme-btn" onclick="toggleTheme()">☀️ 라이트</button>
+      <button class="theme-btn" id="theme-btn" onclick="toggleTheme()">🌙 다크</button>
     </nav>
   </div>
 </header>
@@ -776,7 +776,7 @@ function switchTab(tab) {
   // 페이스 계산기 vs 대회 목록 섹션 전환
   document.querySelector('.filters-wrap').style.display = isPace ? 'none' : '';
   document.querySelector('.content').style.display      = isPace ? 'none' : '';
-  document.getElementById('pace-calc-section').style.display = isPace ? '' : 'none';
+  document.getElementById('pace-calc-section').style.display = isPace ? 'block' : 'none';
 
   // 탭 버튼 상태
   document.getElementById('tab-domestic').classList.toggle('active', tab === 'domestic');
