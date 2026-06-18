@@ -314,96 +314,6 @@
       .rd-day     { font-size: 1.5rem; }
     }
 
-    /* ── PACE CALCULATOR ── */
-    #pace-calc-section { display: none; }
-    .calc-wrap { max-width: 560px; margin: 0 auto; padding: 32px 20px 56px; }
-    .calc-heading {
-      font-size: 1.3rem; font-weight: 900; color: var(--text);
-      margin-bottom: 20px; letter-spacing: -0.5px;
-    }
-    .calc-mode-tabs { display: flex; gap: 8px; margin-bottom: 24px; }
-    .calc-mode-btn {
-      flex: 1;
-      padding: 10px 8px; border-radius: var(--radius);
-      border: 1px solid var(--border); background: var(--surface2);
-      color: var(--text-muted); font-size: 0.82rem; font-weight: 700;
-      cursor: pointer; transition: all .18s; text-align: center;
-    }
-    .calc-mode-btn:hover { border-color: var(--primary); color: var(--primary); }
-    .calc-mode-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
-    .calc-card {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 22px; margin-bottom: 14px;
-    }
-    .calc-card-title {
-      font-size: 0.72rem; font-weight: 700; color: var(--text-muted);
-      text-transform: uppercase; letter-spacing: .5px; margin-bottom: 18px;
-    }
-    .calc-field { margin-bottom: 18px; }
-    .calc-field:last-child { margin-bottom: 0; }
-    .calc-label {
-      display: block; font-size: 0.82rem; font-weight: 600; color: var(--text-muted);
-      margin-bottom: 8px;
-    }
-    .calc-presets { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
-    .calc-preset {
-      padding: 4px 13px; border-radius: 20px;
-      border: 1px solid var(--border);
-      background: var(--surface2); color: var(--text-muted);
-      font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all .15s;
-    }
-    .calc-preset:hover { border-color: var(--accent); color: var(--accent); }
-    .calc-preset.active { background: var(--accent); color: #000; border-color: var(--accent); }
-    .calc-input-row { display: flex; gap: 8px; align-items: center; }
-    .calc-input {
-      width: 100%; padding: 10px 14px;
-      border: 1px solid var(--border); border-radius: var(--radius);
-      background: var(--surface2); color: var(--text);
-      font-size: 1rem; outline: none; transition: border-color .15s;
-      font-family: inherit; -moz-appearance: textfield;
-    }
-    .calc-input::-webkit-outer-spin-button,
-    .calc-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-    .calc-input:focus { border-color: var(--primary); }
-    .calc-input::placeholder { color: var(--text-muted); }
-    .calc-sep { color: var(--text-muted); font-weight: 700; font-size: 1.1rem; flex-shrink: 0; }
-    .calc-btn {
-      width: 100%; padding: 13px; margin-top: 20px;
-      border-radius: var(--radius); border: none;
-      background: linear-gradient(90deg, var(--primary), var(--accent));
-      color: #fff; font-size: 1rem; font-weight: 700; cursor: pointer;
-      transition: opacity .15s; letter-spacing: .3px;
-    }
-    .calc-btn:hover { opacity: .88; }
-    .calc-result {
-      background: var(--surface); border: 2px solid var(--primary);
-      border-radius: var(--radius); padding: 28px 24px;
-      text-align: center; display: none; margin-bottom: 14px;
-      position: relative; overflow: hidden;
-    }
-    .calc-result::before {
-      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
-      background: linear-gradient(90deg, var(--primary), var(--accent));
-    }
-    .calc-result.show { display: block; }
-    .calc-result-label { font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 10px; letter-spacing: .4px; }
-    .calc-result-value {
-      font-size: 3rem; font-weight: 900; letter-spacing: -1px; line-height: 1;
-      background: linear-gradient(90deg, var(--primary), var(--accent));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-    }
-    .calc-result-unit { font-size: 0.95rem; color: var(--text-muted); margin-top: 6px; font-weight: 600; }
-    .calc-result-sub { font-size: 0.78rem; color: var(--text-muted); margin-top: 10px; }
-    .calc-error {
-      color: var(--primary); font-size: 0.85rem; text-align: center;
-      margin-top: 8px; display: none; padding: 10px;
-      background: var(--primary-dim); border-radius: var(--radius);
-    }
-    .calc-error.show { display: block; }
-    @media (max-width: 480px) {
-      .calc-mode-btn { font-size: 0.75rem; padding: 9px 4px; }
-      .calc-result-value { font-size: 2.2rem; }
-    }
   </style>
 </head>
 <body>
@@ -416,6 +326,7 @@
     </a>
     <nav>
       <a href="/guide.html" style="color:var(--text-muted);text-decoration:none;font-size:0.88rem;font-weight:600;">입문 가이드</a>
+      <a href="/pace.html" style="color:var(--text-muted);text-decoration:none;font-size:0.88rem;font-weight:600;">페이스 계산기</a>
       <button class="theme-btn" id="theme-btn" onclick="toggleTheme()">🌙 다크</button>
     </nav>
   </div>
@@ -442,7 +353,6 @@
   <div class="tab-inner">
     <button class="tab-btn active" id="tab-domestic" onclick="switchTab('domestic')">🇰🇷 국내 대회</button>
     <button class="tab-btn"        id="tab-intl"     onclick="switchTab('intl')">🌏 해외 대회</button>
-    <button class="tab-btn"        id="tab-pace"     onclick="switchTab('pace')">🏃 페이스 계산기</button>
   </div>
 </div>
 
@@ -495,121 +405,6 @@
   </div>
 </div>
 
-<!-- ── PACE CALCULATOR ── -->
-<div id="pace-calc-section">
-  <div class="calc-wrap">
-    <div class="calc-heading">🏃 페이스 계산기</div>
-
-    <!-- 모드 전환 탭 -->
-    <div class="calc-mode-tabs">
-      <button class="calc-mode-btn active" id="cmode-pace"   onclick="setCalcMode('pace')">⏱ 페이스 계산</button>
-      <button class="calc-mode-btn"        id="cmode-finish" onclick="setCalcMode('finish')">🏁 완주시간</button>
-      <button class="calc-mode-btn"        id="cmode-dist"   onclick="setCalcMode('dist')">📏 거리 계산</button>
-    </div>
-
-    <!-- ① 페이스 계산: 거리 + 목표시간 → 페이스 -->
-    <div id="calc-pace" class="calc-panel">
-      <div class="calc-card">
-        <div class="calc-card-title">거리와 목표 완주시간을 입력하세요</div>
-        <div class="calc-field">
-          <label class="calc-label">거리 (km)</label>
-          <div class="calc-presets" id="pace-presets">
-            <button class="calc-preset" onclick="setPreset('pace',5)">5km</button>
-            <button class="calc-preset" onclick="setPreset('pace',10)">10km</button>
-            <button class="calc-preset" onclick="setPreset('pace',21.0975)">하프</button>
-            <button class="calc-preset" onclick="setPreset('pace',42.195)">풀</button>
-          </div>
-          <input id="pace-dist" class="calc-input" type="number" min="0.1" step="0.1" placeholder="예: 10" />
-        </div>
-        <div class="calc-field">
-          <label class="calc-label">목표 시간</label>
-          <div class="calc-input-row">
-            <input id="pace-h" class="calc-input" type="number" min="0" max="99" placeholder="시" />
-            <span class="calc-sep">:</span>
-            <input id="pace-m" class="calc-input" type="number" min="0" max="59" placeholder="분" />
-            <span class="calc-sep">:</span>
-            <input id="pace-s" class="calc-input" type="number" min="0" max="59" placeholder="초" />
-          </div>
-        </div>
-        <button class="calc-btn" onclick="calcPace()">계산하기</button>
-      </div>
-      <div class="calc-result" id="pace-result">
-        <div class="calc-result-label">필요 페이스</div>
-        <div class="calc-result-value" id="pace-result-val">—</div>
-        <div class="calc-result-unit">분 / km</div>
-        <div class="calc-result-sub" id="pace-result-sub"></div>
-      </div>
-      <div class="calc-error" id="pace-error"></div>
-    </div>
-
-    <!-- ② 완주시간 계산: 거리 + 페이스 → 완주시간 -->
-    <div id="calc-finish" class="calc-panel" style="display:none;">
-      <div class="calc-card">
-        <div class="calc-card-title">거리와 페이스를 입력하세요</div>
-        <div class="calc-field">
-          <label class="calc-label">거리 (km)</label>
-          <div class="calc-presets" id="finish-presets">
-            <button class="calc-preset" onclick="setPreset('finish',5)">5km</button>
-            <button class="calc-preset" onclick="setPreset('finish',10)">10km</button>
-            <button class="calc-preset" onclick="setPreset('finish',21.0975)">하프</button>
-            <button class="calc-preset" onclick="setPreset('finish',42.195)">풀</button>
-          </div>
-          <input id="finish-dist" class="calc-input" type="number" min="0.1" step="0.1" placeholder="예: 42.195" />
-        </div>
-        <div class="calc-field">
-          <label class="calc-label">페이스 (분 : 초 / km)</label>
-          <div class="calc-input-row">
-            <input id="finish-pm" class="calc-input" type="number" min="0" max="99" placeholder="분" />
-            <span class="calc-sep">:</span>
-            <input id="finish-ps" class="calc-input" type="number" min="0" max="59" placeholder="초" />
-          </div>
-        </div>
-        <button class="calc-btn" onclick="calcFinish()">계산하기</button>
-      </div>
-      <div class="calc-result" id="finish-result">
-        <div class="calc-result-label">예상 완주시간</div>
-        <div class="calc-result-value" id="finish-result-val">—</div>
-        <div class="calc-result-unit" id="finish-result-unit"></div>
-        <div class="calc-result-sub" id="finish-result-sub"></div>
-      </div>
-      <div class="calc-error" id="finish-error"></div>
-    </div>
-
-    <!-- ③ 거리 계산: 페이스 + 달린시간 → 거리 -->
-    <div id="calc-dist" class="calc-panel" style="display:none;">
-      <div class="calc-card">
-        <div class="calc-card-title">페이스와 달린 시간을 입력하세요</div>
-        <div class="calc-field">
-          <label class="calc-label">페이스 (분 : 초 / km)</label>
-          <div class="calc-input-row">
-            <input id="dist-pm" class="calc-input" type="number" min="0" max="99" placeholder="분" />
-            <span class="calc-sep">:</span>
-            <input id="dist-ps" class="calc-input" type="number" min="0" max="59" placeholder="초" />
-          </div>
-        </div>
-        <div class="calc-field">
-          <label class="calc-label">달린 시간</label>
-          <div class="calc-input-row">
-            <input id="dist-h" class="calc-input" type="number" min="0" max="99" placeholder="시" />
-            <span class="calc-sep">:</span>
-            <input id="dist-m" class="calc-input" type="number" min="0" max="59" placeholder="분" />
-            <span class="calc-sep">:</span>
-            <input id="dist-s" class="calc-input" type="number" min="0" max="59" placeholder="초" />
-          </div>
-        </div>
-        <button class="calc-btn" onclick="calcDist()">계산하기</button>
-      </div>
-      <div class="calc-result" id="dist-result">
-        <div class="calc-result-label">달린 거리</div>
-        <div class="calc-result-value" id="dist-result-val">—</div>
-        <div class="calc-result-unit">km</div>
-        <div class="calc-result-sub" id="dist-result-sub"></div>
-      </div>
-      <div class="calc-error" id="dist-error"></div>
-    </div>
-
-  </div>
-</div>
 
 <script>
 // ════════════════════════════════
@@ -772,30 +567,21 @@ function setNavActive(el) {
 //  탭 전환
 // ════════════════════════════════
 function switchTab(tab) {
-  const isPace = tab === 'pace';
-  // 페이스 계산기 vs 대회 목록 섹션 전환
-  document.querySelector('.filters-wrap').style.display = isPace ? 'none' : '';
-  document.querySelector('.content').style.display      = isPace ? 'none' : '';
-  document.getElementById('pace-calc-section').style.display = isPace ? 'block' : 'none';
-
   // 탭 버튼 상태
   document.getElementById('tab-domestic').classList.toggle('active', tab === 'domestic');
   document.getElementById('tab-intl').classList.toggle('active',     tab === 'intl');
-  document.getElementById('tab-pace').classList.toggle('active',     tab === 'pace');
 
-  if (!isPace) {
-    currentTab = tab;
-    activeRegion = activeStatus = activeDist = activeMonth = '전체';
-    activeSearch = '';
-    showPast = false;
-    const si = document.getElementById('search-input');
-    if (si) { si.value = ''; }
-    document.getElementById('search-clear').style.display = 'none';
-    const btn = document.getElementById('past-toggle-btn');
-    if (btn) { btn.classList.remove('on'); btn.textContent = '📅 지난 대회 포함'; }
-    buildFilters();
-    renderRaces();
-  }
+  currentTab = tab;
+  activeRegion = activeStatus = activeDist = activeMonth = '전체';
+  activeSearch = '';
+  showPast = false;
+  const si = document.getElementById('search-input');
+  if (si) { si.value = ''; }
+  document.getElementById('search-clear').style.display = 'none';
+  const btn = document.getElementById('past-toggle-btn');
+  if (btn) { btn.classList.remove('on'); btn.textContent = '📅 지난 대회 포함'; }
+  buildFilters();
+  renderRaces();
 }
 
 function clearSearch() {
@@ -971,130 +757,6 @@ function renderRaces() {
   renderRaces();
 })();
 
-// ════════════════════════════════
-//  페이스 계산기
-// ════════════════════════════════
-
-function setCalcMode(mode) {
-  ['pace','finish','dist'].forEach(m => {
-    document.getElementById('cmode-' + m).classList.toggle('active', m === mode);
-    document.getElementById('calc-' + m).style.display = m === mode ? '' : 'none';
-    // 결과/에러 숨기기
-    hideCalcResult(m + '-result');
-    hideCalcError(m + '-error');
-  });
-}
-
-function setPreset(mode, km) {
-  const input = document.getElementById(mode + '-dist');
-  if (!input) return;
-  input.value = km;
-  const container = document.getElementById(mode + '-presets');
-  if (!container) return;
-  container.querySelectorAll('.calc-preset').forEach(btn => {
-    const val = btn.textContent;
-    const match =
-      (val === '5km'  && km === 5)       ||
-      (val === '10km' && km === 10)      ||
-      (val === '하프' && km === 21.0975) ||
-      (val === '풀'   && km === 42.195);
-    btn.classList.toggle('active', match);
-  });
-}
-
-function showCalcResult(id, val, sub) {
-  const el = document.getElementById(id);
-  if (el) el.classList.add('show');
-  const valEl = document.getElementById(id + '-val');
-  if (valEl) valEl.textContent = val;
-  const subEl = document.getElementById(id + '-sub');
-  if (subEl) subEl.textContent = sub || '';
-}
-function hideCalcResult(id) {
-  const el = document.getElementById(id);
-  if (el) el.classList.remove('show');
-}
-function showCalcError(id, msg) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  el.classList.add('show');
-  el.textContent = msg || '입력값을 확인해 주세요.';
-}
-function hideCalcError(id) {
-  const el = document.getElementById(id);
-  if (el) el.classList.remove('show');
-}
-
-function secsToTimeStr(totalSecs) {
-  const ts = Math.round(totalSecs);
-  const h  = Math.floor(ts / 3600);
-  const m  = Math.floor((ts % 3600) / 60);
-  const s  = ts % 60;
-  if (h > 0) return `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-  return `${m}:${String(s).padStart(2,'0')}`;
-}
-function paceStr(secsPerKm) {
-  const m = Math.floor(secsPerKm / 60);
-  const s = Math.floor(secsPerKm % 60);
-  return `${m}′${String(s).padStart(2,'0')}″`;
-}
-
-// ① 페이스 계산: 거리 + 목표시간 → 페이스
-function calcPace() {
-  hideCalcResult('pace-result');
-  hideCalcError('pace-error');
-  const dist = parseFloat(document.getElementById('pace-dist').value);
-  const h    = parseInt(document.getElementById('pace-h').value) || 0;
-  const m    = parseInt(document.getElementById('pace-m').value) || 0;
-  const s    = parseInt(document.getElementById('pace-s').value) || 0;
-  const totalSecs = h * 3600 + m * 60 + s;
-  if (!dist || dist <= 0 || totalSecs <= 0) {
-    showCalcError('pace-error', '거리와 목표 시간을 모두 입력해 주세요.');
-    return;
-  }
-  const secsPerKm = totalSecs / dist;
-  showCalcResult('pace-result', paceStr(secsPerKm),
-    `${dist}km · 목표시간 ${secsToTimeStr(totalSecs)}`);
-}
-
-// ② 완주시간 계산: 거리 + 페이스 → 완주시간
-function calcFinish() {
-  hideCalcResult('finish-result');
-  hideCalcError('finish-error');
-  const dist = parseFloat(document.getElementById('finish-dist').value);
-  const pm   = parseInt(document.getElementById('finish-pm').value) || 0;
-  const ps   = parseInt(document.getElementById('finish-ps').value) || 0;
-  const secsPerKm = pm * 60 + ps;
-  if (!dist || dist <= 0 || secsPerKm <= 0) {
-    showCalcError('finish-error', '거리와 페이스를 모두 입력해 주세요.');
-    return;
-  }
-  const totalSecs = secsPerKm * dist;
-  const unitEl = document.getElementById('finish-result-unit');
-  if (unitEl) unitEl.textContent = '';
-  showCalcResult('finish-result', secsToTimeStr(totalSecs),
-    `${dist}km · 페이스 ${paceStr(secsPerKm)}/km`);
-}
-
-// ③ 거리 계산: 페이스 + 달린시간 → 거리
-function calcDist() {
-  hideCalcResult('dist-result');
-  hideCalcError('dist-error');
-  const pm = parseInt(document.getElementById('dist-pm').value) || 0;
-  const ps = parseInt(document.getElementById('dist-ps').value) || 0;
-  const h  = parseInt(document.getElementById('dist-h').value)  || 0;
-  const m  = parseInt(document.getElementById('dist-m').value)  || 0;
-  const s  = parseInt(document.getElementById('dist-s').value)  || 0;
-  const secsPerKm = pm * 60 + ps;
-  const totalSecs = h * 3600 + m * 60 + s;
-  if (secsPerKm <= 0 || totalSecs <= 0) {
-    showCalcError('dist-error', '페이스와 달린 시간을 모두 입력해 주세요.');
-    return;
-  }
-  const distKm = totalSecs / secsPerKm;
-  showCalcResult('dist-result', distKm.toFixed(2),
-    `페이스 ${paceStr(secsPerKm)}/km · ${secsToTimeStr(totalSecs)}`);
-}
 </script>
 
 <footer style="text-align:center; padding: 32px 16px; color: var(--text-muted); font-size: 0.82rem; border-top: 1px solid var(--border); margin-top: 48px;">
