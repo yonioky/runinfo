@@ -18,302 +18,273 @@
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3081734032955539"
      crossorigin="anonymous"></script>
   <style>
-    /* ── CSS 변수 ── */
+    /* ════════ DESIGN TOKENS (monochrome + single coral accent) ════════ */
     :root {
-      --primary:        #ff4d6d;
-      --primary-dim:    rgba(255,77,109,0.15);
-      --secondary:      #4dabf7;
-      --secondary-dim:  rgba(77,171,247,0.15);
-      --accent:         #ffa94d;
-      --bg:             #0d0d10;
-      --surface:        #16161a;
-      --surface2:       #1e1e24;
-      --text:           #e8e8f0;
-      --text-muted:     #6b6b80;
-      --border:         #2a2a34;
-      --radius:         10px;
+      --primary:       #ff4d6d;
+      --primary-hover: #e63b59;
+      --primary-dim:   rgba(255,77,109,0.09);
+      --secondary:     #52525b;
+      --secondary-dim: #f1f1f3;
+      --accent:        #52525b;
+      --bg:            #fafafa;
+      --surface:       #ffffff;
+      --surface2:      #f4f4f5;
+      --text:          #18181b;
+      --text-2:        #52525b;
+      --text-muted:    #a1a1aa;
+      --border:        #e7e7ea;
+      --border-strong: #d6d6da;
+      --radius:        12px;
+      --shadow:        0 1px 2px rgba(24,24,27,.04), 0 6px 24px rgba(24,24,27,.05);
+      --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Pretendard', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
     }
-    [data-theme="light"] {
-      --bg:             #f4f5f7;
-      --surface:        #ffffff;
-      --surface2:       #f0f1f3;
-      --text:           #1a1a2e;
-      --text-muted:     #7a7a90;
-      --border:         #e0e0e8;
-      --primary-dim:    rgba(255,77,109,0.10);
-      --secondary-dim:  rgba(77,171,247,0.10);
+    [data-theme="dark"] {
+      --primary:       #ff5c7a;
+      --primary-hover: #ff7188;
+      --primary-dim:   rgba(255,92,122,0.14);
+      --secondary:     #a1a1aa;
+      --secondary-dim: #1f1f24;
+      --accent:        #a1a1aa;
+      --bg:            #0a0a0c;
+      --surface:       #141417;
+      --surface2:      #1c1c20;
+      --text:          #f4f4f5;
+      --text-2:        #d4d4d8;
+      --text-muted:    #71717a;
+      --border:        #27272a;
+      --border-strong: #3f3f46;
+      --shadow:        0 1px 2px rgba(0,0,0,.5), 0 6px 24px rgba(0,0,0,.4);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { -webkit-text-size-adjust: 100%; }
     body {
-      font-family: -apple-system, 'Segoe UI', 'Malgun Gothic', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
+      font-family: var(--font);
+      background: var(--bg); color: var(--text);
+      min-height: 100vh; line-height: 1.6;
+      -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
       transition: background .25s, color .25s;
     }
+    a { color: inherit; }
 
-    /* ── HEADER ── */
+    /* ════════ HEADER ════════ */
     header {
       background: var(--surface);
+      background: color-mix(in srgb, var(--surface) 86%, transparent);
       border-bottom: 1px solid var(--border);
       position: sticky; top: 0; z-index: 100;
-      backdrop-filter: blur(12px);
+      backdrop-filter: saturate(180%) blur(14px);
+      -webkit-backdrop-filter: saturate(180%) blur(14px);
     }
     .header-inner {
       max-width: 1080px; margin: 0 auto;
       display: flex; align-items: center; justify-content: space-between;
-      padding: 0 20px; height: 56px;
+      padding: 0 20px; height: 60px; gap: 12px;
     }
-    .logo { text-decoration: none; display: flex; align-items: center; }
-    .logo-img {
-      height: 38px; width: auto;
-      filter: invert(1);   /* 다크모드: 검정→흰색 */
-      transition: opacity .2s;
-    }
-    .logo:hover .logo-img { opacity: .75; }
-    [data-theme="light"] .logo-img { filter: invert(0); } /* 라이트모드: 원본 그대로 */
-    nav { display: flex; align-items: center; gap: 6px; }
-    .nav-link {
-      text-decoration: none; color: var(--text-muted);
-      font-size: 0.88rem; font-weight: 600;
-      padding: 5px 14px; border-radius: 20px; transition: all .18s; cursor: pointer;
-      border: none; background: none;
-    }
-    .nav-link:hover, .nav-link.active { color: var(--primary); background: var(--primary-dim); }
-    .theme-btn {
-      padding: 5px 13px; border-radius: 20px;
-      border: 1px solid var(--border);
-      background: var(--surface2); color: var(--text-muted);
-      font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all .18s;
-    }
-    .theme-btn:hover { border-color: var(--primary); color: var(--primary); }
+    .logo { text-decoration: none; display: flex; align-items: center; gap: 9px; }
+    .logo-img { height: 30px; width: auto; filter: invert(0); transition: opacity .2s; }
+    .logo:hover .logo-img { opacity: .7; }
+    [data-theme="dark"] .logo-img { filter: invert(1); }
+    .logo-word { font-weight: 800; font-size: 1.05rem; letter-spacing: -.02em; color: var(--text); }
+    .logo-word .ac { color: var(--primary); }
 
-    /* ── HERO ── */
+    nav { display: flex; align-items: center; gap: 4px; }
+    .nav-link {
+      text-decoration: none; color: var(--text-2);
+      font-size: 0.875rem; font-weight: 600;
+      padding: 7px 13px; border-radius: 9px; cursor: pointer;
+      border: none; background: none; transition: background .15s, color .15s;
+      white-space: nowrap;
+    }
+    .nav-link:hover { color: var(--text); background: var(--surface2); }
+    .nav-link.active { color: var(--primary); }
+    .theme-btn {
+      margin-left: 4px; width: 34px; height: 34px; flex-shrink: 0;
+      display: inline-flex; align-items: center; justify-content: center;
+      border-radius: 9px; border: 1px solid var(--border);
+      background: var(--surface); color: var(--text-2);
+      font-size: 0.95rem; cursor: pointer; transition: all .15s;
+    }
+    .theme-btn:hover { border-color: var(--border-strong); color: var(--text); }
+
+    /* ════════ HERO ════════ */
     .hero {
-      background: linear-gradient(160deg, #1a0a10 0%, #0d0d10 40%, #080d1a 100%);
-      padding: 36px 20px 32px; text-align: center;
+      background: var(--surface);
+      padding: 52px 20px 40px; text-align: center;
       border-bottom: 1px solid var(--border);
     }
-    [data-theme="light"] .hero { background: linear-gradient(160deg, #fff0f3 0%, #f4f5f7 50%, #eef4ff 100%); }
+    .hero-kicker {
+      font-size: 0.72rem; font-weight: 700; letter-spacing: .22em;
+      text-transform: uppercase; color: var(--text-muted); margin-bottom: 14px;
+    }
     .hero-title {
-      font-size: 3.6rem; font-weight: 900; letter-spacing: -2px;
-      background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-      margin-bottom: 8px; line-height: 1;
+      font-size: 3.4rem; font-weight: 900; letter-spacing: -.045em;
+      color: var(--text); margin-bottom: 12px; line-height: 1;
     }
-    .hero-sub { font-size: 0.88rem; color: var(--text-muted); margin-bottom: 24px; }
+    .hero-title .ac { color: var(--primary); }
+    .hero-sub {
+      font-size: 0.95rem; color: var(--text-2); max-width: 540px;
+      margin: 0 auto 28px; line-height: 1.7;
+    }
 
-    /* 접수 마감 임박 */
-    .deadline-section { max-width: 860px; margin: 0 auto; }
-    .deadline-label {
-      font-size: 0.78rem; font-weight: 700; color: var(--text-muted);
-      text-align: left; margin-bottom: 10px; letter-spacing: .4px;
+    /* 최신정보 / 마감임박 공통 */
+    .deadline-section, #latest-section { max-width: 860px; margin: 0 auto; }
+    #latest-section { margin-bottom: 20px; }
+    .deadline-label, .section-eyebrow {
+      font-size: 0.74rem; font-weight: 700; color: var(--text-muted);
+      text-align: left; margin-bottom: 11px; letter-spacing: .04em; text-transform: uppercase;
     }
-    .deadline-cards {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
-    }
+    .deadline-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
     .dl-card {
       background: var(--surface); border: 1px solid var(--border);
-      border-radius: 10px; padding: 14px 16px;
+      border-radius: var(--radius); padding: 15px 16px;
       text-align: left; cursor: pointer;
-      transition: border-color .15s, transform .15s;
-      position: relative; overflow: hidden;
+      transition: border-color .15s, transform .15s, box-shadow .15s;
     }
-    .dl-card::before {
-      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
-      background: linear-gradient(90deg, var(--primary), var(--accent));
-    }
-    .dl-card:hover { border-color: var(--primary); transform: translateY(-2px); }
-    .dl-card-name { font-size: 0.88rem; font-weight: 700; color: var(--text); margin-bottom: 6px; line-height: 1.35;
+    .dl-card:hover { border-color: var(--border-strong); transform: translateY(-2px); box-shadow: var(--shadow); }
+    .dl-card-name { font-size: 0.88rem; font-weight: 700; color: var(--text); margin-bottom: 8px; line-height: 1.4;
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .dl-card-meta { display: flex; align-items: center; justify-content: space-between; }
     .dl-card-date { font-size: 0.72rem; color: var(--text-muted); }
     .dl-card-dday {
-      font-size: 0.72rem; font-weight: 800; padding: 2px 8px; border-radius: 6px;
-      background: var(--primary); color: #fff;
+      font-size: 0.7rem; font-weight: 800; padding: 3px 9px; border-radius: 7px;
+      background: var(--primary); color: #fff; letter-spacing: .02em;
     }
-    .dl-card-dday.yellow { background: var(--accent); color: #000; }
+    .dl-card-dday.yellow { background: var(--surface2); color: var(--text-2); }
     .dl-empty { font-size: 0.85rem; color: var(--text-muted); text-align: center; padding: 20px 0; grid-column: 1/-1; }
 
-    @media (max-width: 600px) {
-      .deadline-cards { grid-template-columns: 1fr; }
-    }
+    @media (max-width: 600px) { .deadline-cards { grid-template-columns: 1fr; } }
 
-    /* ── TABS ── */
+    /* ════════ TABS ════════ */
     .tab-bar { background: var(--surface); border-bottom: 1px solid var(--border); }
-    .tab-inner { max-width: 1080px; margin: 0 auto; display: flex; padding: 0 20px; }
+    .tab-inner { max-width: 1080px; margin: 0 auto; display: flex; padding: 0 20px; gap: 4px; }
     .tab-btn {
-      padding: 13px 24px; font-size: 0.92rem; font-weight: 700;
+      padding: 14px 18px; font-size: 0.92rem; font-weight: 700;
       color: var(--text-muted); border: none; background: none;
-      cursor: pointer; border-bottom: 2px solid transparent; transition: all .18s;
+      cursor: pointer; border-bottom: 2px solid transparent; transition: color .15s, border-color .15s;
+      margin-bottom: -1px;
     }
+    .tab-btn:hover { color: var(--text); }
     .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
 
-    /* ── FILTERS ── */
-    .filters-wrap {
-      background: var(--surface); border-bottom: 1px solid var(--border);
-      padding: 12px 0;
-    }
-    .filters-inner {
-      max-width: 1080px; margin: 0 auto; padding: 0 20px;
-      display: flex; flex-direction: column; gap: 8px;
-    }
+    /* ════════ FILTERS ════════ */
+    .filters-wrap { background: var(--surface); border-bottom: 1px solid var(--border); padding: 14px 0; }
+    .filters-inner { max-width: 1080px; margin: 0 auto; padding: 0 20px; display: flex; flex-direction: column; gap: 9px; }
     .filter-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
     .filter-label {
-      font-size: 0.72rem; font-weight: 700; color: var(--text-muted);
-      width: 32px; flex-shrink: 0; text-transform: uppercase; letter-spacing: .5px;
+      font-size: 0.7rem; font-weight: 700; color: var(--text-muted);
+      width: 34px; flex-shrink: 0; text-transform: uppercase; letter-spacing: .06em;
     }
     .chip {
-      padding: 4px 13px; border-radius: 20px;
-      border: 1px solid var(--border);
-      background: var(--surface2); color: var(--text-muted);
-      font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all .15s;
+      padding: 5px 13px; border-radius: 8px;
+      border: 1px solid var(--border); background: var(--surface);
+      color: var(--text-2); font-size: 0.8rem; font-weight: 600;
+      cursor: pointer; transition: all .15s;
     }
-    .chip:hover { border-color: var(--primary); color: var(--primary); }
-    .chip.active { background: var(--primary); color: #fff; border-color: var(--primary); }
-    .chip.region-chip.active { background: var(--secondary); border-color: var(--secondary); }
-    .chip.dist-chip.active { background: var(--accent); border-color: var(--accent); color: #000; }
-    .chip.month-chip.active { background: var(--primary); border-color: var(--primary); color: #fff; }
+    .chip:hover { border-color: var(--border-strong); color: var(--text); }
+    .chip.active,
+    .chip.region-chip.active,
+    .chip.dist-chip.active,
+    .chip.month-chip.active {
+      background: var(--text); color: var(--bg); border-color: var(--text);
+    }
 
-    /* 검색창 */
     .search-wrap { position: relative; display: flex; align-items: center; flex: 1; max-width: 360px; }
     .search-input {
-      width: 100%; padding: 6px 32px 6px 14px;
-      border: 1px solid var(--border); border-radius: 20px;
-      background: var(--surface2); color: var(--text);
-      font-size: 0.85rem; outline: none; transition: border-color .15s;
+      width: 100%; padding: 8px 32px 8px 14px;
+      border: 1px solid var(--border); border-radius: 9px;
+      background: var(--surface); color: var(--text);
+      font-size: 0.85rem; outline: none; transition: border-color .15s, box-shadow .15s;
     }
     .search-input::placeholder { color: var(--text-muted); }
-    .search-input:focus { border-color: var(--primary); }
+    .search-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-dim); }
     .search-clear {
-      position: absolute; right: 10px;
-      background: none; border: none; color: var(--text-muted);
-      font-size: 0.75rem; cursor: pointer; padding: 0; line-height: 1;
+      position: absolute; right: 10px; background: none; border: none;
+      color: var(--text-muted); font-size: 0.78rem; cursor: pointer; padding: 0; line-height: 1;
     }
     .search-clear:hover { color: var(--primary); }
 
-    /* ── CONTENT ── */
-    .content { max-width: 1080px; margin: 0 auto; padding: 20px 20px 48px; }
-    .content-header {
-      display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 14px;
-    }
+    /* ════════ CONTENT ════════ */
+    .content { max-width: 1080px; margin: 0 auto; padding: 24px 20px 56px; }
+    .content-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; gap: 10px; }
     .result-count { font-size: 0.85rem; color: var(--text-muted); }
-    .result-count strong { color: var(--primary); font-size: 1rem; }
+    .result-count strong { color: var(--text); font-size: 1.05rem; font-weight: 800; }
     .toolbar { display: flex; align-items: center; gap: 8px; }
     .past-btn {
-      padding: 5px 13px; border-radius: 20px;
-      border: 1px solid var(--border); background: var(--surface2);
-      color: var(--text-muted); font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: all .15s;
+      padding: 6px 13px; border-radius: 8px;
+      border: 1px solid var(--border); background: var(--surface);
+      color: var(--text-2); font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: all .15s;
     }
-    .past-btn.on { border-color: var(--accent); color: var(--accent); }
+    .past-btn:hover { border-color: var(--border-strong); color: var(--text); }
+    .past-btn.on { border-color: var(--text); color: var(--text); background: var(--surface2); }
     .sort-select {
       border: 1px solid var(--border); border-radius: 8px;
-      padding: 5px 10px; font-size: 0.82rem; cursor: pointer;
-      background: var(--surface2); color: var(--text); transition: background .25s;
+      padding: 6px 10px; font-size: 0.82rem; cursor: pointer;
+      background: var(--surface); color: var(--text); font-family: inherit;
     }
 
-    /* ── RACE CARDS ── */
-    .race-list { display: flex; flex-direction: column; gap: 8px; }
+    /* ════════ RACE CARDS ════════ */
+    .race-list { display: flex; flex-direction: column; gap: 9px; }
     .race-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
+      background: var(--surface); border: 1px solid var(--border);
       border-radius: var(--radius);
       display: flex; align-items: stretch; overflow: hidden;
       cursor: pointer; transition: border-color .15s, box-shadow .15s, transform .15s;
-      position: relative;
     }
-    .race-card::before {
-      content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
-      background: var(--primary); opacity: 0; transition: opacity .15s;
-      border-radius: var(--radius) 0 0 var(--radius);
-    }
-    .race-card:hover { border-color: var(--primary); box-shadow: 0 4px 20px rgba(255,77,109,.12); transform: translateY(-1px); }
-    .race-card:hover::before { opacity: 1; }
+    .race-card:hover { border-color: var(--border-strong); box-shadow: var(--shadow); transform: translateY(-1px); }
 
-    /* 날짜 컬럼 */
     .race-date {
-      width: 80px; min-width: 80px;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      padding: 12px 6px; text-align: center; gap: 1px;
-      background: var(--primary-dim);
+      width: 84px; min-width: 84px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 14px 6px; text-align: center; gap: 2px;
+      background: var(--surface2); border-right: 1px solid var(--border);
     }
-    .race-date.intl { background: var(--secondary-dim); }
-    .rd-month { font-size: 0.7rem; font-weight: 700; color: var(--primary); letter-spacing: .5px; }
-    .rd-day   { font-size: 1.8rem; font-weight: 900; color: var(--primary); line-height: 1; }
-    .rd-week  { font-size: 0.68rem; color: var(--primary); opacity: .8; }
-    .race-date.intl .rd-month,
-    .race-date.intl .rd-day,
-    .race-date.intl .rd-week { color: var(--secondary); }
+    .rd-month { font-size: 0.7rem; font-weight: 700; color: var(--text-2); letter-spacing: .04em; }
+    .rd-day   { font-size: 1.85rem; font-weight: 900; color: var(--text); line-height: 1; letter-spacing: -.03em; }
+    .rd-week  { font-size: 0.68rem; color: var(--text-muted); }
 
-    .dday-badge {
-      margin-top: 5px; font-size: 0.62rem; font-weight: 800;
-      padding: 2px 6px; border-radius: 6px; display: inline-block;
+    .dday-badge { margin-top: 7px; font-size: 0.62rem; font-weight: 800; padding: 3px 7px; border-radius: 6px; display: inline-block; letter-spacing: .02em; }
+    .dday-today, .dday-soon { background: var(--primary); color: #fff; }
+    .dday-mid  { background: var(--text); color: var(--bg); }
+    .dday-far  { background: var(--surface); color: var(--text-2); border: 1px solid var(--border-strong); }
+    .dday-past { background: transparent; color: var(--text-muted); border: 1px solid var(--border); }
+
+    .race-body { flex: 1; padding: 13px 16px; display: flex; flex-direction: column; justify-content: center; gap: 6px; min-width: 0; }
+    .race-badges { display: flex; gap: 5px; flex-wrap: wrap; }
+    .badge {
+      font-size: 0.68rem; font-weight: 700; padding: 3px 8px; border-radius: 6px;
+      background: var(--surface2); color: var(--text-2); border: 1px solid var(--border);
     }
-    .dday-today { background: var(--primary); color: #fff; }
-    .dday-soon  { background: var(--primary); color: #fff; }
-    .dday-mid   { background: var(--accent);  color: #000; }
-    .dday-far   { background: var(--secondary); color: #fff; }
-    .dday-past  { background: var(--border);  color: var(--text-muted); }
-
-    /* 본문 */
-    .race-body { flex: 1; padding: 12px 16px; display: flex; flex-direction: column; justify-content: center; gap: 5px; }
-    .race-badges { display: flex; gap: 4px; flex-wrap: wrap; }
-    .badge { font-size: 0.68rem; font-weight: 700; padding: 2px 8px; border-radius: 6px; }
-    .b-full  { background: rgba(255,77,109,.18);  color: #ff8fa3; }
-    .b-half  { background: rgba(255,169,77,.18);  color: #ffa94d; }
-    .b-10k   { background: rgba(64,192,87,.18);   color: #69db7c; }
-    .b-5k    { background: rgba(77,171,247,.18);  color: #74c0fc; }
-    .b-ultra { background: rgba(190,75,219,.18);  color: #da77f2; }
-    .b-trail { background: rgba(32,201,151,.18);  color: #38d9a9; }
-    .b-other { background: rgba(134,142,150,.15); color: #adb5bd; }
-
+    .badge.b-full { background: var(--primary-dim); color: var(--primary); border-color: transparent; }
     .race-name { font-size: 1rem; font-weight: 700; line-height: 1.35; color: var(--text); }
-    .race-meta {
-      font-size: 0.78rem; color: var(--text-muted);
-      display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
-    }
-    .race-meta span { display: flex; align-items: center; gap: 3px; }
+    .race-meta { font-size: 0.78rem; color: var(--text-muted); display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+    .race-meta span { display: inline-flex; align-items: center; }
 
-    /* 오른쪽 */
-    .race-right {
-      display: flex; flex-direction: column;
-      align-items: flex-end; justify-content: center;
-      padding: 12px 16px; gap: 6px; min-width: 140px;
-    }
-    .status-badge {
-      font-size: 0.72rem; font-weight: 700;
-      padding: 4px 12px; border-radius: 20px; letter-spacing: .3px;
-    }
-    .s-open     { background: rgba(64,192,87,.18);  color: #69db7c;  border: 1px solid rgba(64,192,87,.3); }
-    .s-upcoming { background: rgba(255,169,77,.18); color: #ffa94d;  border: 1px solid rgba(255,169,77,.3); }
-    .s-closed   { background: rgba(134,142,150,.1); color: var(--text-muted); border: 1px solid var(--border); }
+    .race-right { display: flex; flex-direction: column; align-items: flex-end; justify-content: center; padding: 13px 16px; gap: 7px; min-width: 140px; }
+    .status-badge { font-size: 0.72rem; font-weight: 700; padding: 4px 12px; border-radius: 20px; letter-spacing: .01em; }
+    .s-open     { background: var(--primary-dim); color: var(--primary); border: 1px solid color-mix(in srgb, var(--primary) 30%, transparent); }
+    .s-upcoming { background: var(--surface); color: var(--text-2); border: 1px solid var(--border-strong); }
+    .s-closed   { background: var(--surface2); color: var(--text-muted); border: 1px solid var(--border); }
     .reg-period { font-size: 0.7rem; color: var(--text-muted); text-align: right; line-height: 1.6; }
 
-    /* ── EMPTY ── */
-    .empty-state { text-align: center; padding: 64px 20px; color: var(--text-muted); display: none; }
-    .empty-state .empty-icon { font-size: 3rem; margin-bottom: 12px; }
-    .empty-state p { font-size: 0.9rem; }
+    /* ════════ EMPTY ════════ */
+    .empty-state { text-align: center; padding: 72px 20px; color: var(--text-muted); display: none; }
+    .empty-state p { font-size: 0.92rem; }
 
-    /* ── FOOTER ── */
-    footer {
-      background: var(--surface); border-top: 1px solid var(--border);
-      text-align: center; padding: 24px 20px;
-      font-size: 0.78rem; color: var(--text-muted);
-    }
+    /* ════════ FOOTER ════════ */
+    footer { background: var(--surface); border-top: 1px solid var(--border); text-align: center; padding: 28px 20px; font-size: 0.8rem; color: var(--text-muted); }
+    footer a { color: var(--text-muted); }
     footer strong { color: var(--text); }
 
-    /* ── MOBILE ── */
+    /* ════════ MOBILE ════════ */
     @media (max-width: 600px) {
-      .hero-title { font-size: 1.4rem; }
-
+      .hero { padding: 40px 20px 32px; }
+      .hero-title { font-size: 2.4rem; }
       .race-right { display: none; }
-      .race-date  { width: 68px; min-width: 68px; }
-      .rd-day     { font-size: 1.5rem; }
+      .race-date { width: 72px; min-width: 72px; }
+      .rd-day { font-size: 1.6rem; }
+      .nav-link { padding: 7px 10px; font-size: 0.82rem; }
     }
-
   </style>
 </head>
 <body>
@@ -321,29 +292,32 @@
 <!-- ── HEADER ── -->
 <header>
   <div class="header-inner">
-    <a class="logo" href="#">
+    <a class="logo" href="/">
       <img src="logo.png" alt="JOYFULRUN" class="logo-img">
+      <span class="logo-word">JOYFUL<span class="ac">RUN</span></span>
     </a>
     <nav>
-      <a href="/guide.html" style="color:var(--text-muted);text-decoration:none;font-size:0.88rem;font-weight:600;">입문 가이드</a>
-      <a href="/pace.html" style="color:var(--text-muted);text-decoration:none;font-size:0.88rem;font-weight:600;">페이스 계산기</a>
-      <button class="theme-btn" id="theme-btn" onclick="toggleTheme()">🌙 다크</button>
+      <a class="nav-link active" href="/">대회 일정</a>
+      <a class="nav-link" href="/guide.html">입문 가이드</a>
+      <a class="nav-link" href="/pace.html">페이스 계산기</a>
+      <button class="theme-btn" id="theme-btn" onclick="toggleTheme()" aria-label="테마 전환">🌙</button>
     </nav>
   </div>
 </header>
 
 <!-- ── HERO ── -->
 <section class="hero">
-  <div class="hero-title">JOYFULRUN</div>
+  <div class="hero-kicker">마라톤 · 러닝 대회 정보</div>
+  <div class="hero-title">JOYFUL<span class="ac">RUN</span></div>
   <p class="hero-sub">국내외 마라톤·러닝 대회 일정을 한곳에서 확인하세요. 풀코스·하프·10km 등 다양한 거리의 대회 정보와 접수 일정을 제공합니다.</p>
-  <!-- 📢 최신정보 -->
-  <div id="latest-section" style="max-width:860px;margin:0 auto 18px;display:none;">
-    <div style="font-size:0.78rem;font-weight:700;color:var(--text-muted);text-align:left;margin-bottom:8px;letter-spacing:.4px;">📢 최신정보 — 접수 오픈 예정</div>
+  <!-- 최신정보 -->
+  <div id="latest-section" style="max-width:860px;margin:0 auto 20px;display:none;">
+    <div class="section-eyebrow">최신 정보 — 접수 오픈 예정</div>
     <div id="latest-list" style="display:flex;flex-direction:column;gap:6px;"></div>
   </div>
   <!-- 접수 마감 임박 -->
   <div class="deadline-section">
-    <div class="deadline-label">⏰ 접수 마감 임박</div>
+    <div class="deadline-label">접수 마감 임박</div>
     <div class="deadline-cards" id="deadline-cards"></div>
   </div>
 </section>
@@ -351,8 +325,8 @@
 <!-- ── TAB BAR ── -->
 <div class="tab-bar">
   <div class="tab-inner">
-    <button class="tab-btn active" id="tab-domestic" onclick="switchTab('domestic')">🇰🇷 국내 대회</button>
-    <button class="tab-btn"        id="tab-intl"     onclick="switchTab('intl')">🌏 해외 대회</button>
+    <button class="tab-btn active" id="tab-domestic" onclick="switchTab('domestic')">국내 대회</button>
+    <button class="tab-btn"        id="tab-intl"     onclick="switchTab('intl')">해외 대회</button>
   </div>
 </div>
 
@@ -391,7 +365,7 @@
   <div class="content-header">
     <p class="result-count"><strong id="count">0</strong>개 대회</p>
     <div class="toolbar">
-      <button class="past-btn" id="past-toggle-btn" onclick="togglePast()">📅 지난 대회 포함</button>
+      <button class="past-btn" id="past-toggle-btn" onclick="togglePast()">지난 대회 포함</button>
       <select class="sort-select" id="sort-select" onchange="renderRaces()">
         <option value="date">날짜순</option>
         <option value="name">이름순</option>
@@ -400,7 +374,6 @@
   </div>
   <div class="race-list" id="race-list"></div>
   <div class="empty-state" id="empty-state">
-    <div class="empty-icon">🔍</div>
     <p>조건에 맞는 대회가 없습니다.</p>
   </div>
 </div>
@@ -451,7 +424,7 @@ const DIST_CLS   = {
 function applyTheme(theme) {
   document.documentElement.setAttribute('data-theme', theme);
   const btn = document.getElementById('theme-btn');
-  if (btn) btn.textContent = theme === 'dark' ? '☀️ 라이트' : '🌙 다크';
+  if (btn) btn.textContent = theme === 'dark' ? '☀️' : '🌙';
 }
 function toggleTheme() {
   const cur  = document.documentElement.getAttribute('data-theme');
@@ -481,7 +454,7 @@ function getDday(dateStr) {
 }
 
 // ════════════════════════════════
-//  📢 최신정보 (upcoming — 접수 오픈 예정)
+//  최신정보 (upcoming — 접수 오픈 예정)
 // ════════════════════════════════
 function renderLatest() {
   const section = document.getElementById('latest-section');
@@ -502,7 +475,7 @@ function renderLatest() {
     const regLabel = r.regStart ? `접수 ${r.regStart} 오픈 예정` : '접수일 미정';
     const noticeHtml = r.notice ? `<span style="font-size:0.72rem;color:var(--text-muted);font-style:italic;margin-left:8px">※ ${r.notice}</span>` : '';
     return `<div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;cursor:pointer" onclick="window.open('https://search.naver.com/search.naver?query=${encodeURIComponent(r.name)}','_blank')">
-      <span style="font-size:0.7rem;font-weight:700;background:rgba(255,169,77,.18);color:#ffa94d;border:1px solid rgba(255,169,77,.3);border-radius:5px;padding:2px 7px">NEW</span>
+      <span style="font-size:0.68rem;font-weight:800;letter-spacing:.04em;background:var(--primary-dim);color:var(--primary);border-radius:5px;padding:2px 7px">NEW</span>
       <span style="font-size:0.88rem;font-weight:700;color:var(--text)">${r.name}</span>
       <span style="font-size:0.75rem;color:var(--text-muted)">${r.date || '날짜미정'}</span>
       <span>${distBadges}</span>
@@ -579,7 +552,7 @@ function switchTab(tab) {
   if (si) { si.value = ''; }
   document.getElementById('search-clear').style.display = 'none';
   const btn = document.getElementById('past-toggle-btn');
-  if (btn) { btn.classList.remove('on'); btn.textContent = '📅 지난 대회 포함'; }
+  if (btn) { btn.classList.remove('on'); btn.textContent = '지난 대회 포함'; }
   buildFilters();
   renderRaces();
 }
@@ -600,7 +573,7 @@ function togglePast() {
   activeMonth = '전체';  // 지난 대회 토글 시 월 필터 리셋
   const btn = document.getElementById('past-toggle-btn');
   btn.classList.toggle('on', showPast);
-  btn.textContent = showPast ? '📅 지난 대회 숨기기' : '📅 지난 대회 포함';
+  btn.textContent = showPast ? '지난 대회 숨기기' : '지난 대회 포함';
   buildMonth();
   renderRaces();
 }
@@ -723,8 +696,8 @@ function renderRaces() {
           <div class="race-badges">${badges}</div>
           <div class="race-name">${r.name}</div>
           <div class="race-meta">
-            <span>${isIntl ? '🌏' : '📍'} ${r.location}</span>
-            ${r.startTime ? `<span>⏰ ${r.startTime}</span>` : ''}
+            <span>${r.location}</span>
+            ${r.startTime ? `<span>${r.startTime} 출발</span>` : ''}
           </div>
         </div>
         <div class="race-right">
