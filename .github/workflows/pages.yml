@@ -11,6 +11,11 @@ on:
       - "robots.txt"
       - "**.css"
       - "**.js"
+      - "img/**"
+      - "**.jpg"
+      - "**.jpeg"
+      - "**.png"
+      - "**.webp"
 
   # 수동 배포
   workflow_dispatch:
