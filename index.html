@@ -212,27 +212,29 @@
     @media (max-width: 600px) { .deadline-cards { grid-template-columns: 1fr; } }
 
     /* ════════ TABS ════════ */
-    .tab-bar { background: var(--surface); border-bottom: 1px solid var(--border); }
-    .tab-inner { max-width: 1080px; margin: 0 auto; display: flex; padding: 0 20px; gap: 4px; }
+    .tab-bar { background: var(--bg); padding: 30px 20px 0; }
+    .tab-inner {
+      display: flex; gap: 5px; width: fit-content; margin: 0 auto;
+      background: var(--surface2); padding: 5px; border-radius: 999px; border: 1px solid var(--border);
+    }
     .tab-btn {
-      padding: 14px 18px; font-size: 0.92rem; font-weight: 700;
+      padding: 9px 24px; font-size: 0.9rem; font-weight: 700;
       color: var(--text-muted); border: none; background: none;
-      cursor: pointer; border-bottom: 2px solid transparent; transition: color .15s, border-color .15s;
-      margin-bottom: -1px;
+      cursor: pointer; border-radius: 999px; transition: all .18s;
     }
     .tab-btn:hover { color: var(--text); }
-    .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+    .tab-btn.active { color: #fff; background: linear-gradient(100deg,#ff4d6d,#ff7a5b); box-shadow: 0 4px 14px rgba(255,77,109,.32); }
 
     /* ════════ FILTERS ════════ */
-    .filters-wrap { background: var(--surface); border-bottom: 1px solid var(--border); padding: 14px 0; }
-    .filters-inner { max-width: 1080px; margin: 0 auto; padding: 0 20px; display: flex; flex-direction: column; gap: 9px; }
+    .filters-wrap { background: var(--bg); padding: 20px 0 4px; }
+    .filters-inner { max-width: 1080px; margin: 0 auto; padding: 0 20px; display: flex; flex-direction: column; gap: 10px; }
     .filter-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
     .filter-label {
       font-size: 0.7rem; font-weight: 700; color: var(--text-muted);
       width: 34px; flex-shrink: 0; text-transform: uppercase; letter-spacing: .06em;
     }
     .chip {
-      padding: 5px 13px; border-radius: 8px;
+      padding: 6px 15px; border-radius: 999px;
       border: 1px solid var(--border); background: var(--surface);
       color: var(--text-2); font-size: 0.8rem; font-weight: 600;
       cursor: pointer; transition: all .15s;
@@ -242,13 +244,14 @@
     .chip.region-chip.active,
     .chip.dist-chip.active,
     .chip.month-chip.active {
-      background: var(--text); color: var(--bg); border-color: var(--text);
+      background: linear-gradient(100deg,#ff4d6d,#ff7a5b); color: #fff; border-color: transparent;
+      box-shadow: 0 3px 10px rgba(255,77,109,.28);
     }
 
     .search-wrap { position: relative; display: flex; align-items: center; flex: 1; max-width: 360px; }
     .search-input {
-      width: 100%; padding: 8px 32px 8px 14px;
-      border: 1px solid var(--border); border-radius: 9px;
+      width: 100%; padding: 9px 34px 9px 16px;
+      border: 1px solid var(--border); border-radius: 999px;
       background: var(--surface); color: var(--text);
       font-size: 0.85rem; outline: none; transition: border-color .15s, box-shadow .15s;
     }
@@ -261,64 +264,78 @@
     .search-clear:hover { color: var(--primary); }
 
     /* ════════ CONTENT ════════ */
-    .content { max-width: 1080px; margin: 0 auto; padding: 24px 20px 56px; }
-    .content-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; gap: 10px; }
+    .content { max-width: 1080px; margin: 0 auto; padding: 20px 20px 56px; }
+    .content-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; gap: 10px; }
     .result-count { font-size: 0.85rem; color: var(--text-muted); }
     .result-count strong { color: var(--text); font-size: 1.05rem; font-weight: 800; }
     .toolbar { display: flex; align-items: center; gap: 8px; }
     .past-btn {
-      padding: 6px 13px; border-radius: 8px;
+      padding: 7px 15px; border-radius: 999px;
       border: 1px solid var(--border); background: var(--surface);
       color: var(--text-2); font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: all .15s;
     }
     .past-btn:hover { border-color: var(--border-strong); color: var(--text); }
-    .past-btn.on { border-color: var(--text); color: var(--text); background: var(--surface2); }
+    .past-btn.on { border-color: transparent; color: #fff; background: var(--text); }
     .sort-select {
-      border: 1px solid var(--border); border-radius: 8px;
-      padding: 6px 10px; font-size: 0.82rem; cursor: pointer;
+      border: 1px solid var(--border); border-radius: 999px;
+      padding: 7px 14px; font-size: 0.82rem; cursor: pointer;
       background: var(--surface); color: var(--text); font-family: inherit;
     }
 
     /* ════════ RACE CARDS ════════ */
-    .race-list { display: flex; flex-direction: column; gap: 9px; }
+    .race-list { display: flex; flex-direction: column; gap: 11px; }
     .race-card {
       background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius);
+      border-radius: 14px;
       display: flex; align-items: stretch; overflow: hidden;
-      cursor: pointer; transition: border-color .15s, box-shadow .15s, transform .15s;
+      cursor: pointer;
+      box-shadow: 0 1px 2px rgba(24,24,27,.04), 0 6px 16px rgba(24,24,27,.05);
+      transition: border-color .16s, box-shadow .16s, transform .16s;
     }
-    .race-card:hover { border-color: var(--border-strong); box-shadow: var(--shadow); transform: translateY(-1px); }
+    .race-card:hover {
+      border-color: color-mix(in srgb, var(--primary) 45%, var(--border));
+      box-shadow: 0 10px 28px rgba(24,24,27,.11);
+      transform: translateY(-2px);
+    }
 
     .race-date {
-      width: 84px; min-width: 84px;
+      width: 90px; min-width: 90px;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
-      padding: 14px 6px; text-align: center; gap: 2px;
-      background: var(--surface2); border-right: 1px solid var(--border);
+      padding: 16px 6px; text-align: center; gap: 2px;
+      background: linear-gradient(165deg, var(--primary-dim), transparent 72%), var(--surface2);
+      border-right: 1px solid var(--border);
     }
-    .rd-month { font-size: 0.7rem; font-weight: 700; color: var(--text-2); letter-spacing: .04em; }
-    .rd-day   { font-size: 1.85rem; font-weight: 900; color: var(--text); line-height: 1; letter-spacing: -.03em; }
-    .rd-week  { font-size: 0.68rem; color: var(--text-muted); }
+    .race-date.intl { background: linear-gradient(165deg, rgba(124,92,255,.14), transparent 72%), var(--surface2); }
+    .rd-month { font-size: 0.72rem; font-weight: 800; color: var(--primary); letter-spacing: .04em; }
+    .race-date.intl .rd-month { color: #7c5cff; }
+    .rd-day   { font-size: 2rem; font-weight: 900; color: var(--text); line-height: 1; letter-spacing: -.03em; }
+    .rd-week  { font-size: 0.66rem; color: var(--text-muted); }
 
-    .dday-badge { margin-top: 7px; font-size: 0.62rem; font-weight: 800; padding: 3px 7px; border-radius: 6px; display: inline-block; letter-spacing: .02em; }
-    .dday-today, .dday-soon { background: var(--primary); color: #fff; }
+    .dday-badge { margin-top: 8px; font-size: 0.62rem; font-weight: 800; padding: 3px 9px; border-radius: 999px; display: inline-block; letter-spacing: .02em; }
+    .dday-today, .dday-soon { background: linear-gradient(100deg,#ff4d6d,#ff7a5b); color: #fff; }
     .dday-mid  { background: var(--text); color: var(--bg); }
     .dday-far  { background: var(--surface); color: var(--text-2); border: 1px solid var(--border-strong); }
     .dday-past { background: transparent; color: var(--text-muted); border: 1px solid var(--border); }
 
-    .race-body { flex: 1; padding: 13px 16px; display: flex; flex-direction: column; justify-content: center; gap: 6px; min-width: 0; }
+    .race-body { flex: 1; padding: 15px 18px; display: flex; flex-direction: column; justify-content: center; gap: 7px; min-width: 0; }
     .race-badges { display: flex; gap: 5px; flex-wrap: wrap; }
     .badge {
-      font-size: 0.68rem; font-weight: 700; padding: 3px 8px; border-radius: 6px;
+      font-size: 0.68rem; font-weight: 700; padding: 3px 10px; border-radius: 999px;
       background: var(--surface2); color: var(--text-2); border: 1px solid var(--border);
     }
-    .badge.b-full { background: var(--primary-dim); color: var(--primary); border-color: transparent; }
-    .race-name { font-size: 1rem; font-weight: 700; line-height: 1.35; color: var(--text); }
-    .race-meta { font-size: 0.78rem; color: var(--text-muted); display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+    .badge.b-full  { background: var(--primary-dim); color: var(--primary); border-color: transparent; }
+    .badge.b-half  { background: rgba(124,92,255,.13); color: #7c5cff; border-color: transparent; }
+    .badge.b-10k   { background: rgba(56,138,221,.13); color: #2f7fd6; border-color: transparent; }
+    .badge.b-5k    { background: rgba(29,158,117,.15); color: #0f9e6f; border-color: transparent; }
+    .badge.b-ultra { background: rgba(255,120,80,.15); color: #e0531d; border-color: transparent; }
+    .badge.b-trail { background: rgba(99,153,34,.17); color: #5a8a15; border-color: transparent; }
+    .race-name { font-size: 1.05rem; font-weight: 800; line-height: 1.35; color: var(--text); letter-spacing: -.01em; }
+    .race-meta { font-size: 0.8rem; color: var(--text-2); display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
     .race-meta span { display: inline-flex; align-items: center; }
 
-    .race-right { display: flex; flex-direction: column; align-items: flex-end; justify-content: center; padding: 13px 16px; gap: 7px; min-width: 140px; }
-    .status-badge { font-size: 0.72rem; font-weight: 700; padding: 4px 12px; border-radius: 20px; letter-spacing: .01em; }
-    .s-open     { background: var(--primary-dim); color: var(--primary); border: 1px solid color-mix(in srgb, var(--primary) 30%, transparent); }
+    .race-right { display: flex; flex-direction: column; align-items: flex-end; justify-content: center; padding: 15px 18px; gap: 7px; min-width: 144px; }
+    .status-badge { font-size: 0.72rem; font-weight: 700; padding: 5px 13px; border-radius: 999px; letter-spacing: .01em; }
+    .s-open     { background: linear-gradient(100deg, rgba(255,77,109,.16), rgba(255,122,91,.16)); color: var(--primary); border: 1px solid color-mix(in srgb, var(--primary) 34%, transparent); }
     .s-upcoming { background: var(--surface); color: var(--text-2); border: 1px solid var(--border-strong); }
     .s-closed   { background: var(--surface2); color: var(--text-muted); border: 1px solid var(--border); }
     .reg-period { font-size: 0.7rem; color: var(--text-muted); text-align: right; line-height: 1.6; }
