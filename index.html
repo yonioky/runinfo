@@ -108,24 +108,80 @@
     .theme-btn:hover { border-color: var(--border-strong); color: var(--text); }
 
     /* ════════ HERO ════════ */
+    html { scroll-behavior: smooth; }
     .hero {
-      background: var(--surface);
-      padding: 52px 20px 40px; text-align: center;
+      position: relative; overflow: hidden;
+      padding: 92px 20px 78px; text-align: center;
+      background: #0b0b12;
+      background-image:
+        radial-gradient(circle at 18% 22%, rgba(255,77,109,.45), transparent 45%),
+        radial-gradient(circle at 84% 28%, rgba(124,92,255,.34), transparent 46%),
+        radial-gradient(circle at 50% 96%, rgba(255,138,91,.30), transparent 52%),
+        linear-gradient(160deg, #0e0e18 0%, #150f1e 58%, #0b0b12 100%);
       border-bottom: 1px solid var(--border);
     }
+    /* 도트 패턴 */
+    .hero::before {
+      content:''; position:absolute; inset:0; pointer-events:none;
+      background-image: radial-gradient(rgba(255,255,255,.06) 1px, transparent 1px);
+      background-size: 22px 22px; opacity:.55;
+      -webkit-mask-image: radial-gradient(ellipse at 50% 40%, #000 40%, transparent 78%);
+              mask-image: radial-gradient(ellipse at 50% 40%, #000 40%, transparent 78%);
+    }
+    /* 움직이는 광원 */
+    .hero::after {
+      content:''; position:absolute; top:-45%; left:50%; width:130%; height:130%;
+      transform: translateX(-50%); pointer-events:none;
+      background: radial-gradient(circle, rgba(255,77,109,.20), transparent 55%);
+      animation: heroGlow 9s ease-in-out infinite alternate;
+    }
+    @keyframes heroGlow {
+      from { transform: translateX(-58%) scale(1); }
+      to   { transform: translateX(-42%) scale(1.18); }
+    }
+    .hero-inner { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; }
     .hero-kicker {
-      font-size: 0.72rem; font-weight: 700; letter-spacing: .22em;
-      text-transform: uppercase; color: var(--text-muted); margin-bottom: 14px;
+      display:inline-block; font-size: 0.72rem; font-weight: 800; letter-spacing: .22em;
+      text-transform: uppercase; color: #fff; margin-bottom: 26px;
+      background: rgba(255,255,255,.10); border: 1px solid rgba(255,255,255,.16);
+      padding: 7px 16px; border-radius: 999px; backdrop-filter: blur(6px);
     }
     .hero-title {
-      font-size: 3.4rem; font-weight: 900; letter-spacing: -.045em;
-      color: var(--text); margin-bottom: 12px; line-height: 1;
+      font-size: 4.6rem; font-weight: 900; letter-spacing: -.05em;
+      color: #fff; margin-bottom: 20px; line-height: .95;
     }
-    .hero-title .ac { color: var(--primary); }
+    .hero-title .ac {
+      background: linear-gradient(100deg, #ff5c7a, #ff8a5b);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
     .hero-sub {
-      font-size: 0.95rem; color: var(--text-2); max-width: 540px;
-      margin: 0 auto 28px; line-height: 1.7;
+      font-size: 1.06rem; color: rgba(255,255,255,.74); max-width: 570px;
+      margin: 0 auto 32px; line-height: 1.7;
     }
+    /* 실시간 스탯 */
+    .hero-stats { display:flex; justify-content:center; gap:14px; flex-wrap:wrap; margin-bottom: 34px; }
+    .hero-stat {
+      background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.14);
+      border-radius: 18px; padding: 16px 26px; min-width: 116px; backdrop-filter: blur(8px);
+    }
+    .hero-stat .num { font-size: 1.95rem; font-weight: 900; color: #fff; line-height: 1; letter-spacing: -.03em; }
+    .hero-stat .lbl { font-size: .74rem; color: rgba(255,255,255,.62); margin-top: 8px; font-weight: 600; letter-spacing: .03em; }
+    /* CTA */
+    .hero-cta { display:flex; justify-content:center; gap:12px; flex-wrap:wrap; }
+    .btn-primary, .btn-ghost {
+      display:inline-flex; align-items:center; gap:8px; font-size:.95rem; font-weight:700;
+      padding: 14px 28px; border-radius: 999px; text-decoration:none;
+      transition: transform .15s, box-shadow .15s, background .15s;
+    }
+    .btn-primary { background: linear-gradient(100deg,#ff4d6d,#ff7a5b); color:#fff; box-shadow: 0 8px 24px rgba(255,77,109,.35); }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(255,77,109,.48); }
+    .btn-ghost { background: rgba(255,255,255,.08); color:#fff; border:1px solid rgba(255,255,255,.22); }
+    .btn-ghost:hover { background: rgba(255,255,255,.16); transform: translateY(-2px); }
+
+    /* 히어로 하단 정보 밴드 */
+    .info-band { background: var(--surface); border-bottom: 1px solid var(--border); padding: 30px 20px; }
+    .info-band-inner { max-width: 860px; margin: 0 auto; }
+    .tab-bar { scroll-margin-top: 72px; }
 
     /* 최신정보 / 마감임박 공통 */
     .deadline-section, #latest-section { max-width: 860px; margin: 0 auto; }
@@ -278,8 +334,12 @@
 
     /* ════════ MOBILE ════════ */
     @media (max-width: 600px) {
-      .hero { padding: 40px 20px 32px; }
-      .hero-title { font-size: 2.4rem; }
+      .hero { padding: 62px 20px 54px; }
+      .hero-title { font-size: 3rem; }
+      .hero-sub { font-size: 0.98rem; }
+      .hero-stat { padding: 13px 18px; min-width: 96px; }
+      .hero-stat .num { font-size: 1.6rem; }
+      .btn-primary, .btn-ghost { padding: 12px 22px; font-size: 0.9rem; }
       .race-right { display: none; }
       .race-date { width: 72px; min-width: 72px; }
       .rd-day { font-size: 1.6rem; }
@@ -308,23 +368,40 @@
 
 <!-- ── HERO ── -->
 <section class="hero">
-  <div class="hero-kicker">마라톤 · 러닝 대회 정보</div>
-  <div class="hero-title">JOYFUL<span class="ac">RUN</span></div>
-  <p class="hero-sub">국내외 마라톤·러닝 대회 일정을 한곳에서 확인하세요. 풀코스·하프·10km 등 다양한 거리의 대회 정보와 접수 일정을 제공합니다.</p>
-  <!-- 최신정보 -->
-  <div id="latest-section" style="max-width:860px;margin:0 auto 20px;display:none;">
-    <div class="section-eyebrow">최신 정보 — 접수 오픈 예정</div>
-    <div id="latest-list" style="display:flex;flex-direction:column;gap:6px;"></div>
-  </div>
-  <!-- 접수 마감 임박 -->
-  <div class="deadline-section">
-    <div class="deadline-label">접수 마감 임박</div>
-    <div class="deadline-cards" id="deadline-cards"></div>
+  <div class="hero-inner">
+    <div class="hero-kicker">마라톤 · 러닝 대회 정보</div>
+    <h1 class="hero-title">JOYFUL<span class="ac">RUN</span></h1>
+    <p class="hero-sub">전국 마라톤·러닝 대회 일정을 한곳에서. 풀코스·하프·10km·트레일까지, 접수 일정과 마감 임박 정보를 실시간으로 확인하세요.</p>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="num" id="stat-total">—</div><div class="lbl">다가오는 대회</div></div>
+      <div class="hero-stat"><div class="num" id="stat-open">—</div><div class="lbl">접수중</div></div>
+      <div class="hero-stat"><div class="num" id="stat-month">—</div><div class="lbl">이번 달</div></div>
+    </div>
+    <div class="hero-cta">
+      <a class="btn-primary" href="#list-top">다가오는 대회 보기 →</a>
+      <a class="btn-ghost" href="/guide.html">입문 가이드</a>
+    </div>
   </div>
 </section>
 
+<!-- ── 정보 밴드 (최신 / 마감 임박) ── -->
+<div class="info-band">
+  <div class="info-band-inner">
+    <!-- 최신정보 -->
+    <div id="latest-section" style="margin:0 auto 20px;display:none;">
+      <div class="section-eyebrow">최신 정보 — 접수 오픈 예정</div>
+      <div id="latest-list" style="display:flex;flex-direction:column;gap:6px;"></div>
+    </div>
+    <!-- 접수 마감 임박 -->
+    <div class="deadline-section">
+      <div class="deadline-label">접수 마감 임박</div>
+      <div class="deadline-cards" id="deadline-cards"></div>
+    </div>
+  </div>
+</div>
+
 <!-- ── TAB BAR ── -->
-<div class="tab-bar">
+<div class="tab-bar" id="list-top">
   <div class="tab-inner">
     <button class="tab-btn active" id="tab-domestic" onclick="switchTab('domestic')">국내 대회</button>
     <button class="tab-btn"        id="tab-intl"     onclick="switchTab('intl')">해외 대회</button>
@@ -3372,8 +3449,18 @@ function renderLatest() {
 //  접수 마감 임박 (상위 3개)
 // ════════════════════════════════
 function updateStats() {
+  renderHeroStats();
   renderLatest();
   renderDeadlines();
+}
+
+function renderHeroStats() {
+  const today = todayStr();
+  const upcoming = RACES.filter(r => r.date >= today);
+  const set = (id, n) => { const el = document.getElementById(id); if (el) el.textContent = n.toLocaleString(); };
+  set('stat-total', upcoming.length);
+  set('stat-open',  upcoming.filter(r => r.status === 'open').length);
+  set('stat-month', upcoming.filter(r => r.date.slice(0,7) === today.slice(0,7)).length);
 }
 
 function renderDeadlines() {
