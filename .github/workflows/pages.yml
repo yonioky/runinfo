@@ -5,8 +5,10 @@ on:
   push:
     branches: [main]
     paths:
-      - "index.html"
+      - "**.html"
       - "races.json"
+      - "sitemap.xml"
+      - "robots.txt"
       - "**.css"
       - "**.js"
 

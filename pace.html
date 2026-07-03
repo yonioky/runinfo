@@ -150,6 +150,26 @@
       .calc-heading { font-size: 1.6rem; }
       .nav-link { padding: 7px 10px; font-size: 0.82rem; }
     }
+
+    /* 페이스 설명 아티클 */
+    .pace-article { max-width: 720px; margin: 0 auto; padding: 8px 20px 40px; }
+    .pace-article h2 {
+      font-size: 1.3rem; font-weight: 800; letter-spacing: -.02em; color: var(--text);
+      margin: 48px 0 14px; padding-bottom: 11px; border-bottom: 1px solid var(--border);
+    }
+    .pace-article h3 { font-size: 1rem; font-weight: 700; color: var(--text); margin: 24px 0 8px; }
+    .pace-article p { color: var(--text-2); font-size: 0.95rem; line-height: 1.75; margin-bottom: 13px; }
+    .pace-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 0.86rem; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+    .pace-table th { background: var(--surface2); color: var(--text); padding: 10px 12px; text-align: center; font-weight: 700; border-bottom: 1px solid var(--border); }
+    .pace-table td { padding: 10px 12px; color: var(--text-2); text-align: center; border-bottom: 1px solid var(--border); }
+    .pace-table td:first-child { text-align: left; font-weight: 600; color: var(--text); }
+    .pace-table tbody tr:nth-child(even) { background: color-mix(in srgb, var(--surface2) 50%, transparent); }
+    .pace-table tr:last-child td { border-bottom: none; }
+    .pace-tip { background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--primary); border-radius: var(--radius); padding: 20px 22px; margin: 18px 0; }
+    .pace-tip h3 { margin: 0 0 12px; font-size: 0.98rem; }
+    .pace-tip p { margin: 0 0 8px; padding-left: 16px; position: relative; font-size: 0.9rem; line-height: 1.6; }
+    .pace-tip p::before { content: ''; position: absolute; left: 2px; top: .6em; width: 6px; height: 6px; border-radius: 50%; background: var(--primary); }
+    .pace-tip p:last-child { margin-bottom: 0; }
   </style>
 </head>
 <body>
@@ -164,6 +184,7 @@
       <a class="nav-link" href="/">대회 일정</a>
       <a class="nav-link" href="/guide.html">입문 가이드</a>
       <a class="nav-link active" href="/pace.html">페이스 계산기</a>
+      <a class="nav-link" href="/reviews.html">대회 후기</a>
       <button class="theme-btn" id="theme-btn" onclick="toggleTheme()" aria-label="테마 전환">🌙</button>
     </nav>
   </div>
@@ -282,6 +303,71 @@
     <div class="calc-error" id="dist-error"></div>
   </div>
 </div>
+
+<article class="pace-article">
+  <h2>페이스, 왜 알아야 할까</h2>
+  <p>페이스(pace)는 1km를 달리는 데 걸리는 시간으로, 보통 '분:초/km'로 표기합니다. 예를 들어 '6:00 페이스'는 1km를 6분에 달린다는 뜻입니다. 완주 성공의 핵심은 속도가 아니라 '일정한 페이스 유지'에 있습니다. 초반에 신이 나서 빠르게 나가면 글리코겐이 빨리 소모되고 젖산이 쌓여, 후반에 급격히 무너지는 이른바 '오버페이스'에 빠집니다. 자신의 목표에 맞는 페이스를 미리 알고 대회 내내 지키는 것이 완주의 절반입니다.</p>
+
+  <h2>목표 완주시간별 페이스 환산표</h2>
+  <p>아래 표는 대표 거리에서 목표 완주시간을 맞추려면 어느 페이스로 달려야 하는지 정리한 것입니다. 위 계산기로 정확한 값을 구하기 전, 대략적인 감을 잡는 데 활용하세요.</p>
+
+  <h3>10km</h3>
+  <table class="pace-table">
+    <thead><tr><th>목표 시간</th><th>필요 페이스</th><th>수준</th></tr></thead>
+    <tbody>
+      <tr><td>70분</td><td>7:00/km</td><td>입문 완주</td></tr>
+      <tr><td>60분</td><td>6:00/km</td><td>초급</td></tr>
+      <tr><td>50분</td><td>5:00/km</td><td>중급</td></tr>
+      <tr><td>45분</td><td>4:30/km</td><td>상급</td></tr>
+    </tbody>
+  </table>
+
+  <h3>하프 (21.0975km)</h3>
+  <table class="pace-table">
+    <thead><tr><th>목표 시간</th><th>필요 페이스</th><th>수준</th></tr></thead>
+    <tbody>
+      <tr><td>2시간 30분</td><td>약 7:07/km</td><td>입문 완주</td></tr>
+      <tr><td>2시간 10분</td><td>약 6:10/km</td><td>초급</td></tr>
+      <tr><td>2시간 00분</td><td>약 5:41/km</td><td>중급</td></tr>
+      <tr><td>1시간 45분</td><td>약 4:59/km</td><td>상급</td></tr>
+    </tbody>
+  </table>
+
+  <h3>풀코스 (42.195km)</h3>
+  <table class="pace-table">
+    <thead><tr><th>목표 시간</th><th>필요 페이스</th><th>수준</th></tr></thead>
+    <tbody>
+      <tr><td>5시간 00분</td><td>약 7:07/km</td><td>입문 완주</td></tr>
+      <tr><td>4시간 30분</td><td>약 6:24/km</td><td>초급</td></tr>
+      <tr><td>4시간 00분</td><td>약 5:41/km</td><td>중급 (Sub-4)</td></tr>
+      <tr><td>3시간 30분</td><td>약 4:59/km</td><td>상급 (Sub-3:30)</td></tr>
+    </tbody>
+  </table>
+
+  <h2>네거티브 스플릿 — 후반을 더 빠르게</h2>
+  <p>'네거티브 스플릿'은 코스 전반보다 후반을 더 빠르게 달리는 전략으로, 마라톤에서 가장 검증된 페이스 운영법입니다. 초반 오버페이스로 후반에 걷게 되는 것보다, 전반을 목표 페이스보다 5~10초 느리게 여유 있게 시작한 뒤 몸이 풀리는 중반부터 페이스를 끌어올리는 편이 기록과 체감 난이도 모두에서 유리합니다. 특히 첫 대회라면 '앞에서 아낀 힘이 뒤에서 무기가 된다'는 원칙을 기억하세요.</p>
+
+  <div class="pace-tip">
+    <h3>실전 페이스 운영 팁</h3>
+    <p>첫 3~5km는 목표 페이스보다 의도적으로 천천히 — 주변 분위기에 휩쓸리지 마세요.</p>
+    <p>내리막에서 무리해서 속도를 내면 대퇴사두가 상해 후반에 부담이 됩니다.</p>
+    <p>오르막에서는 페이스가 아니라 '노력'을 일정하게 유지하세요. 속도가 조금 느려지는 것은 정상입니다.</p>
+    <p>GPS 워치의 순간 페이스는 오차가 큽니다. 1km 랩(구간) 평균으로 판단하는 습관을 들이세요.</p>
+  </div>
+
+  <h2>환경에 따른 페이스 보정</h2>
+  <p>계산기로 구한 페이스는 이상적인 조건 기준입니다. 실제 대회에서는 날씨와 지형을 반영해 현실적인 기대치를 조정해야 합니다.</p>
+  <table class="pace-table">
+    <thead><tr><th>조건</th><th>영향</th><th>대응</th></tr></thead>
+    <tbody>
+      <tr><td>더위 (25°C 이상)</td><td>심박이 오르고 페이스가 자연히 느려짐</td><td>목표를 km당 10~20초 여유 있게</td></tr>
+      <tr><td>강한 맞바람</td><td>체감 노력 크게 증가</td><td>무리하지 말고 노력 기준으로 유지</td></tr>
+      <tr><td>누적 고저차가 큰 코스</td><td>오르막에서 페이스 손실</td><td>내리막에서 만회하되 과속 금지</td></tr>
+      <tr><td>고온다습</td><td>탈수·체온 상승 위험</td><td>보급 강화, 전해질 보충 필수</td></tr>
+    </tbody>
+  </table>
+  <p>더 구체적인 훈련·부상 예방 정보는 <a href="/guide.html" style="color:var(--primary);">마라톤 입문 가이드</a>에서, 대회 일정은 <a href="/" style="color:var(--primary);">대회 일정 페이지</a>에서 확인하세요.</p>
+</article>
 
 <footer>
   <p>© 2026 JOYFULRUN. All rights reserved. &nbsp;|&nbsp; <a href="/privacy.html" style="color:var(--text-muted);text-decoration:underline;">개인정보처리방침</a></p>

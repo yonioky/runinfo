@@ -33,10 +33,13 @@ jobs:
       - name: 🕷️ 크롤러 실행
         run: python crawler.py
 
-      - name: 💾 races.json 커밋 & 푸시
+      - name: 🧩 index.html 정적 대회목록 갱신 (프리렌더)
+        run: python prerender.py
+
+      - name: 💾 races.json & index.html 커밋 & 푸시
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add races.json
+          git add races.json index.html
           git diff --cached --quiet || git commit -m "chore: 마라톤 데이터 자동 갱신 $(date +'%Y-%m-%d')"
           git push
